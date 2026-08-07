@@ -27,7 +27,7 @@ export default function AudienceOption({
       aria-pressed={active}
       className={`relative w-full overflow-hidden rounded-2xl border text-left transition-all duration-300 active:scale-[0.99] ${
         active
-          ? "min-h-[94px] border-sc-ocean bg-sc-ocean-soft px-4 py-4"
+          ? "min-h-23.5 border-sc-ocean bg-sc-ocean-soft px-4 py-4"
           : "h-12 border-white/10 bg-white/5 px-3 hover:border-white/25 hover:bg-white/10"
       } ${
         featured
@@ -36,13 +36,17 @@ export default function AudienceOption({
       }`}
     >
       {featured && (
-        <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-sc-feature-soft px-2 py-1 text-[10px] font-bold uppercase tracking-widest text-sc-feature">
-          <Star className="size-3 fill-current" />
+        <span className="absolute right-3 top-2 flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-sc-feature">
+          <Star className="size-3" />
           Featured
         </span>
       )}
 
-      <span className={`flex gap-3 ${active ? "items-start" : "h-full items-center"}`}>
+      <span
+        className={`flex gap-3 ${
+          active ? "items-start" : "h-full items-center"
+        }`}
+      >
         <span
           className={`flex shrink-0 items-center justify-center rounded-xl transition-all duration-300 ${
             active
@@ -54,12 +58,19 @@ export default function AudienceOption({
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className={`block font-semibold text-sc-text ${active ? "text-base" : "text-sm"}`}>
+          <span
+            className={`block font-semibold text-sc-text ${
+              active ? "text-base" : "text-sm"
+            }`}
+          >
             {label}
           </span>
+
           <span
             className={`block overflow-hidden text-sm leading-5 text-sc-muted transition-all duration-300 ${
-              active ? "mt-1 max-h-14 opacity-100" : "max-h-0 opacity-0"
+              active
+                ? "mt-1 max-h-14 opacity-100"
+                : "max-h-0 opacity-0"
             }`}
           >
             {description}

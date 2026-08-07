@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { NearbyPlace } from "@/app/types/place";
+import type { NearbyPlace } from "@/app/types/places";
 
 type PlacesRequestBody = {
   latitude?: number;

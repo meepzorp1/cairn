@@ -1,10 +1,18 @@
 "use client";
 
-import { Film, GraduationCap, Sparkles, Users } from "lucide-react";
+import {
+  Film,
+  GraduationCap,
+  Sparkles,
+  Users,
+} from "lucide-react";
+
 import type { Audience } from "@/app/types/trip";
+import StepHeader from "@/app/trip/setup/components/StepHeader";
+import AudienceOption from "@/app/trip/setup/components/AudienceOption";
 
 type AudienceStepProps = {
-  audiencePageRef: React.Ref<HTMLDivElement>;
+  audiencePageRef: React.Ref<HTMLElement>;
   audience: Audience | null;
   onSelectAudience: (audience: Audience) => void;
   onBack: () => void;
@@ -19,14 +27,13 @@ export default function AudiencePanel({
   return (
     <section
       ref={audiencePageRef}
-      className="AUDIENCE PANEL z-40 absolute inset-0 flex min-h-0 flex-col bg-sc-bg"
-      aria-label="Choose trip audience"
+      className="flex min-h-0 flex-1 flex-col"
     >
       <StepHeader
-        title="What should we show you?"
-        description="Choose the kind of Santa Cruz experience you want along the way."
+        title="Who are you exploring as?"
         onBack={onBack}
-        backLabel="Return to travel modes"
+        description="Select the type of trip you want to create, and we’ll show you the best places for your audience."
+        backLabel="Back to trip setup"
       />
 
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
@@ -38,9 +45,8 @@ export default function AudiencePanel({
           <AudienceOption
             label="Lost Boys Tour"
             description="Follow the filming locations from the cult classic through Santa Cruz."
-            icon={Film}
+            icon={<Film className="size-4" />}
             featured
-            accent="red"
             active={audience === "lostboys"}
             onClick={() => onSelectAudience("lostboys")}
           />
@@ -48,7 +54,7 @@ export default function AudiencePanel({
           <AudienceOption
             label="Student"
             description="Cheap eats, study spots, campus life and useful services."
-            icon={GraduationCap}
+            icon={<GraduationCap className="size-4" />}
             active={audience === "student"}
             onClick={() => onSelectAudience("student")}
           />
@@ -56,7 +62,7 @@ export default function AudiencePanel({
           <AudienceOption
             label="Visitor"
             description="Landmarks, attractions, history and local highlights."
-            icon={Users}
+            icon={<Users className="size-4" />}
             active={audience === "visitor"}
             onClick={() => onSelectAudience("visitor")}
           />
@@ -64,7 +70,7 @@ export default function AudiencePanel({
           <AudienceOption
             label="Custom Trip"
             description="Choose exactly what kinds of places and experiences you want."
-            icon={Sparkles}
+            icon={<Sparkles className="size-4" />}
             active={audience === "custom"}
             onClick={() => onSelectAudience("custom")}
           />

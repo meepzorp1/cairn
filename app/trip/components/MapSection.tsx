@@ -32,14 +32,8 @@ type RouteApiResponse = {
   error?: string;
 };
 
-type MapPolyline = {
-  setMap: (map: unknown | null) => void;
-};
-
-type MapPoint = {
-  lat: () => number;
-  lng: () => number;
-};
+type MapPolyline = google.maps.Polyline;
+type MapPoint = google.maps.LatLng;
 
 export default function MapSection({
   location,

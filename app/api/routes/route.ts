@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-
 import type { Coordinates, Mode } from "@/app/trip/types";
 
 type RouteRequestBody = {
