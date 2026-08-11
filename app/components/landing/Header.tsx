@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import NewLogo from "@/app/components/common/NewLogo";
+//import NewLogo from "@/app/components/common/NewLogo";
 import EarlyAccessModal from "@/app/components/modals/EarlyAccessModal";
 import ModalWrapper from "@/app/components/modals/ModalWrapper";
 
@@ -20,7 +20,7 @@ export default function Header() {
         <div className="pointer-events-none absolute inset-x-0 top-full h-14 bg-linear-to-b from-black/25 via-black/10 to-transparent backdrop-blur-[1px]" />
 
         <div className="relative mx-auto mt-8 flex h-24 max-w-7xl items-end justify-between px-5 pb-4 sm:h-28 sm:px-8 sm:pb-5">
-          <NewLogo />
+          {/* <NewLogo /> */}
 
 <div className="hidden md:flex">
           <NavBar />
