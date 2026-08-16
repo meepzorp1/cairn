@@ -13,7 +13,7 @@ export default function LandingPage() {
     const router = useRouter();
     return (
     <div
-      className="root h-dvh overflow-x-hidden overflow-y-auto scroll-smooth bg-background text-sc-elevated"
+      className="PAGE h-dvh overflow-x-hidden overflow-y-auto scroll-smooth bg-background text-sc-elevated"
     >
       <Header />
 
@@ -22,16 +22,7 @@ export default function LandingPage() {
           <HeroContent />
           <ReadyButton  onClick={() => router.push("/explore")}/>
         </Hero>
-
-        {/* <QuickCategories /> */}
-        {/* <StudentSection />
-        <DiscoverySection />
-        {/* <NearbySection />
-        <FinalCallToAction /> */}
       </main>
-
-      {/* <Footer /> */}
-      {/* <MobileNavigation /> */}
     </div>
   );
 }

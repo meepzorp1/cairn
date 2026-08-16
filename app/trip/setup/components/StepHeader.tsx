@@ -18,7 +18,7 @@ export default function StepHeader({
   return (
     <header className="flex shrink-0 items-start justify-between gap-4">
       <div className="min-w-0">
-        <h2 className="max-w-[17rem] text-2xl font-bold leading-tight tracking-tight sm:max-w-none sm:text-3xl">
+        <h2 className="max-w-68 text-2xl font-bold leading-tight tracking-tight sm:max-w-none sm:text-3xl">
           {title}
         </h2>
         <p className="mt-2 max-w-xl text-sm leading-6 text-sc-muted sm:text-base">

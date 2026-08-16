@@ -189,7 +189,7 @@ export default function StartTripPanel({
   };
 
   return (
-    <main className="relative h-dvh min-h-0 w-full overflow-hidden bg-sc-bg text-sc-text">
+    <main className="relative h-dvh min-h-0 w-full text-sc-text">
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.15),transparent_42%)]"
@@ -199,7 +199,7 @@ export default function StartTripPanel({
         className="absolute inset-0 bg-linear-to-b from-sc-panel/20 via-sc-bg/70 to-sc-bg"
       />
 
-      <div className="relative z-10 mx-auto flex h-full min-h-0 w-full max-w-md flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:max-w-3xl sm:px-8">
+      <div className="relative mx-auto flex h-full min-h-0 w-full max-w-md flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:max-w-3xl sm:px-8">
         <div className="flex shrink-0 items-center gap-2 text-sc-ocean">
           <Sparkles className="size-4" />
           <span className="text-sm font-semibold uppercase tracking-[0.18em]">
@@ -207,7 +207,7 @@ export default function StartTripPanel({
           </span>
         </div>
 
-        <div className="relative mt-5 min-h-0 flex-1 overflow-hidden">
+        <div className="relative mt-5 min-h-0 flex-1">
           <IntentStep
             panelRef={intentRef}
             onBack={onBack}

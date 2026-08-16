@@ -41,7 +41,7 @@ export default function Hero({ children }: HeroProps) {
       {/* Final contrast layer */}
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-sc-bg/10 via-sc-bg/35 to-sc-bg/85" />
 
-      <div className="HEROCHILDREN relative z-10 flex min-h-dvh w-full flex-col border border-white justify-between px-2 py-24 sm:pt-40">
+      <div className="HEROCHILDREN relative z-10 flex min-h-dvh w-full flex-col justify-between px-2">
         {children}
       </div>
     </section>

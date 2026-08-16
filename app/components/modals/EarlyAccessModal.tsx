@@ -144,7 +144,7 @@ export default function EarlyAccessModal({
         ) : (
           <>
             <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-300">
-              Lost Boys V2
+              Cairn
             </p>
 
             <h2
@@ -159,7 +159,7 @@ export default function EarlyAccessModal({
               className="mt-3 text-sm leading-6 text-slate-300 sm:text-base"
             >
               Send us your email and we&apos;ll let you know when
-              Lost Boys V2 is ready.
+              Cairn is ready.
             </p>
 
             <form

@@ -46,7 +46,7 @@ export default function PreferencesStep({
   return (
     <section
       ref={panelRef}
-      className="absolute inset-0 flex min-h-0 flex-col bg-sc-bg"
+      className="absolute inset-0 flex min-h-0 flex-col"
       aria-label="Choose preferences"
     >
       <StepHeader
@@ -70,7 +70,7 @@ export default function PreferencesStep({
                 type="button"
                 aria-pressed={selected}
                 onClick={() => toggleInterest(id)}
-                className={`min-h-12 rounded-xl border px-3 py-2 text-sm font-semibold transition active:scale-[0.98] ${
+                className={`min-h-14 rounded-xl border px-3 py-2 text-sm font-semibold transition active:scale-[0.98] ${
                   selected
                     ? "border-sc-sun bg-sc-sun-soft text-sc-text"
                     : "border-white/10 bg-white/5 text-sc-muted hover:bg-white/10"

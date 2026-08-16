@@ -35,7 +35,7 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
     });
 
     gsap.to(iconRef.current, {
-      rotate: -10,
+      rotate: -90,
       scale: 0.92,
       duration: 0.16,
       ease: "power2.out",
@@ -89,6 +89,7 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
 
   const handleClick = () => {
     handleRelease();
+    console.log('clicked')
     onClick();
   };
 
@@ -105,7 +106,7 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
         }
       }}
       onClick={handleClick}
-      className="absolute inset-x-4 bottom-6 flex min-h-14 items-center justify-center gap-3 overflow-hidden rounded-full border border-sc-sun/40 bg-sc-raised px-8 py-4 font-semibold text-sc-text shadow-lg transition-colors hover:border-sc-sun/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-sun lg:right-6 lg:left-auto lg:w-80"
+      className="absolute inset-x-4 bottom-6 flex min-h-14 items-center justify-center gap-3 overflow-hidden rounded-full border border-sc-sun/40 bg-sc-raised px-8 py-4 font-semibold text-sc-text shadow-lg transition-colors hover:border-sc-sun/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-sun lg:right-13 lg:left-auto lg:w-80"
     >
       <span
         ref={glowRef}

@@ -4,8 +4,18 @@ import { Sparkles } from "lucide-react";
 
 export default function HeroContent() {
   return (
-    <div className="z-100 relative flex h-full flex-col justify-end px-5 pt-12 pb-10 sm:px-8 sm:pb-14 sm:pt-36 lg:px-10 lg:pb-16">
+    <div className="relative flex flex-1 flex-col px-5 pb-10 sm:px-8 sm:pb-14 lg:px-10 lg:pb-16">
       <div className="max-w-3xl">
+        <div
+          data-hero
+          className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-white/10 bg-black/15 px-4 py-2 text-xs text-white/60 backdrop-blur-md sm:text-sm lg:mt-22 lg:mb-12"
+        >
+          <Sparkles className="size-4 shrink-0 text-sc-sun" />
+
+          <span>
+            Built for Santa Cruz students, locals, and explorers
+          </span>
+        </div>
         <p
           data-hero
           className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-sc-sun sm:text-sm"
@@ -37,16 +47,7 @@ export default function HeroContent() {
       </div>
 
       <div className="mt-9 sm:mt-11">
-        <div
-          data-hero
-          className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-white/10 bg-black/15 px-4 py-2 text-xs text-white/60 backdrop-blur-md sm:text-sm"
-        >
-          <Sparkles className="size-4 shrink-0 text-sc-sun" />
 
-          <span>
-            Built for Santa Cruz students, locals, and explorers
-          </span>
-        </div>
       </div>
     </div>
   );

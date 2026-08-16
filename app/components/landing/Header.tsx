@@ -13,21 +13,12 @@ export default function Header() {
   return (
     <>
       <header className="absolute inset-x-0 top-0 z-50">
-        {/* Glass background */}
-        <div className="absolute inset-0 bg-black/25 backdrop-blur-[2px]" />
-
-        {/* Soft blend into the hero */}
-        <div className="pointer-events-none absolute inset-x-0 top-full h-14 bg-linear-to-b from-black/25 via-black/10 to-transparent backdrop-blur-[1px]" />
-
-        <div className="relative mx-auto mt-8 flex h-24 max-w-7xl items-end justify-between px-5 pb-4 sm:h-28 sm:px-8 sm:pb-5">
-          {/* <NewLogo /> */}
-
-<div className="hidden md:flex">
-          <NavBar />
-
-          <JoinButton
-            onClick={() => setIsEarlyAccessOpen(true)}
-          />
+        <div className="relative mx-12 flex w-full max-w-7xl px-5 pt-8 sm:px-8">
+          <div className="hidden items-center gap-8 md:flex">
+            <NavBar />
+            <JoinButton
+              onClick={() => setIsEarlyAccessOpen(true)}
+            />
           </div>
         </div>
       </header>
@@ -47,7 +38,7 @@ export default function Header() {
 
 function NavBar() {
   return (
-    <nav className="hidden items-center gap-7 text-sm font-medium text-white/65 md:flex">
+    <nav className="flex items-center gap-7 text-sm font-medium text-white/65">
       <Link
         href="#discover"
         className="transition-colors hover:text-white"
@@ -81,7 +72,7 @@ function JoinButton({ onClick }: JoinButtonProps) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white/85 backdrop-blur transition hover:border-white/25 hover:bg-white/15 hover:text-white"
+      className="rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-semibold text-white/85 transition hover:border-white/25 hover:bg-white/15 hover:text-white"
     >
       Early access
     </button>

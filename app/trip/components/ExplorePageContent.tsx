@@ -4,7 +4,7 @@ import { useState } from "react";
 import ActiveTrip from "./ActiveTrip";
 import StartTripPanel from "../setup/StartTripPanel";
 import type { Options } from "../types";
-import GoogleMapsProvider from "@/app/components/map/GoogleMapsAPIProvider";
+import GoogleMapsProvider from "@/app/api/map/GoogleMapsAPIProvider";
 
 export default function ExplorePageContent() {
   const [trip, setTrip] = useState<Options | null>(null);

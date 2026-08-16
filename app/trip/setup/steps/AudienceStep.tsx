@@ -22,7 +22,7 @@ export default function AudienceStep({
   return (
     <section
       ref={panelRef}
-      className="absolute inset-0 flex min-h-0 flex-col bg-sc-bg"
+      className="absolute inset-0 flex min-h-0 flex-col"
       aria-label="Choose exploration style"
     >
       <StepHeader
