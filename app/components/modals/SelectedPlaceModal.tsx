@@ -19,21 +19,21 @@ export default function SelectedPlaceModal({
   };
 
   return (
-    <div className="absolute inset-x-3 bottom-3 z-30 rounded-2xl border border-white/15 bg-slate-950/95 p-4 text-white shadow-xl backdrop-blur">
+    <div className="absolute inset-x-3 bottom-3 z-30 rounded-2xl border border-cairn-border bg-cairn-outer/95 p-4 text-cairn-text shadow-xl backdrop-blur">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-orange-400">
+          <p className="text-xs font-semibold uppercase tracking-wider text-cairn-gold">
             {place.primaryTypeLabel ?? "Nearby place"}
           </p>
 
-          <h2 className="mt-1 text-lg font-semibold">{place.name}</h2>
+          <h2 className="mt-1 font-display text-xl font-medium text-cairn-text">{place.name}</h2>
 
           {place.address && (
-            <p className="mt-1 text-sm text-white/60">{place.address}</p>
+            <p className="mt-1 text-sm text-cairn-muted">{place.address}</p>
           )}
 
           {place.rating && (
-            <p className="mt-2 text-sm text-white/80">
+            <p className="mt-2 text-sm text-cairn-text/80">
               ★ {place.rating}
               {place.userRatingCount ? ` (${place.userRatingCount})` : ""}
             </p>
@@ -43,7 +43,7 @@ export default function SelectedPlaceModal({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-full px-2 py-1 text-white/60 transition hover:bg-white/10 hover:text-white"
+          className="rounded-full px-2 py-1 text-cairn-muted transition hover:bg-cairn-card/70 hover:text-cairn-text"
           aria-label="Close selected place"
         >
           ×
@@ -52,7 +52,7 @@ export default function SelectedPlaceModal({
 
       <button
         type="button"
-        className="mt-4 w-full rounded-xl bg-orange-600 px-4 py-3 font-semibold transition hover:bg-orange-500"
+        className="mt-4 w-full rounded-xl bg-cairn-gold px-4 py-3 font-semibold transition hover:bg-cairn-gold"
         onClick={handleStartRoute}
       >
         Start route

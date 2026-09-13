@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 
 type StepHeaderProps = {
@@ -7,6 +8,8 @@ type StepHeaderProps = {
   description: string;
   onBack: () => void;
   backLabel: string;
+  eyebrow?: string;
+  eyebrowIcon?: ReactNode;
 };
 
 export default function StepHeader({
@@ -14,26 +17,35 @@ export default function StepHeader({
   description,
   onBack,
   backLabel,
+  eyebrow,
+  eyebrowIcon,
 }: StepHeaderProps) {
   return (
-    <header className="flex shrink-0 items-start justify-between gap-4">
-      <div className="min-w-0">
-        <h2 className="max-w-68 text-2xl font-bold leading-tight tracking-tight sm:max-w-none sm:text-3xl">
-          {title}
-        </h2>
-        <p className="mt-2 max-w-xl text-sm leading-6 text-sc-muted sm:text-base">
-          {description}
-        </p>
-      </div>
-
+    <header className="flex shrink-0 flex-col items-start">
       <button
         type="button"
         onClick={onBack}
-        className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-sc-muted transition hover:bg-white/10 hover:text-sc-text active:scale-95"
+        className="flex size-9.5 shrink-0 items-center justify-center rounded-full border border-cairn-border/70 bg-cairn-card/35 text-cairn-muted transition hover:border-cairn-text/20 hover:bg-cairn-card/70 hover:text-cairn-text active:scale-95"
         aria-label={backLabel}
       >
-        <ArrowLeft className="size-5" />
+        <ArrowLeft className="size-4.5" />
       </button>
+
+      {eyebrow && (
+        <span className="mt-5 inline-flex w-fit items-center gap-2 rounded-full bg-cairn-gold-soft px-3.5 py-1.5 text-sm font-medium text-cairn-gold">
+          {eyebrowIcon}
+          {eyebrow}
+        </span>
+      )}
+
+      <div className="min-w-0">
+        <h2 className="mt-3 max-w-68 font-display text-3xl font-medium leading-[1.08] tracking-[-0.025em] text-cairn-text sm:max-w-none sm:text-4xl">
+          {title}
+        </h2>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-cairn-muted sm:text-base">
+          {description}
+        </p>
+      </div>
     </header>
   );
 }

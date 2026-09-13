@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
+import gsap from "gsap";
 import type {
   Audience,
   Destination,
@@ -11,84 +12,16 @@ import type {
   Preferences,
 } from "../types";
 import { DestinationModal } from "@/app/components/modals";
-import useSetupPanelAnimation, {
-  type SetupStep,
-} from "./animations/useSetupPanelAnimation";
 import AudienceStep from "./steps/AudienceStep";
 import IntentStep from "./steps/IntentStep";
 import PreferencesStep from "./steps/PreferencesStep";
 import TransportationStep from "./steps/TransportationStep";
+import { TRIP_PRESETS, copyTripPreferences } from "../components/presets";
 
-const presetPreferences: Record<Audience, Preferences> = {
-  student: {
-    interests: ["restaurants", "coffee", "study"],
-    budget: "low",
-    misc: {
-      openNow: false,
-      highlyRated: false,
-      petFriendly: false,
-      kidFriendly: false,
-      outdoorSeating: false,
-      wheelchairAccessible: false,
-    },
-  },
-  visitor: {
-    interests: ["restaurants", "beaches", "attractions", "museums"],
-    budget: "any",
-    misc: {
-      openNow: false,
-      highlyRated: true,
-      petFriendly: false,
-      kidFriendly: false,
-      outdoorSeating: false,
-      wheelchairAccessible: false,
-    },
-  },
-  lostboys: {
-    interests: ["filming-locations", "attractions", "hidden-gems"],
-    budget: "any",
-    misc: {
-      openNow: false,
-      highlyRated: false,
-      petFriendly: false,
-      kidFriendly: false,
-      outdoorSeating: false,
-      wheelchairAccessible: false,
-    },
-  },
-  local: {
-    interests: ["restaurants", "live-events", "hidden-gems"],
-    budget: "any",
-    misc: {
-      openNow: false,
-      highlyRated: false,
-      petFriendly: false,
-      kidFriendly: false,
-      outdoorSeating: false,
-      wheelchairAccessible: false,
-    },
-  },
-  custom: {
-    interests: [],
-    budget: "any",
-    misc: {
-      openNow: false,
-      highlyRated: false,
-      petFriendly: false,
-      kidFriendly: false,
-      outdoorSeating: false,
-      wheelchairAccessible: false,
-    },
-  },
-};
+export type SetupStep = "intent" | "travel" | "audience" | "preferences";
+type Direction = 1 | -1;
 
-function copyPreferences(preferences: Preferences): Preferences {
-  return {
-    ...preferences,
-    interests: [...preferences.interests],
-    misc: { ...preferences.misc },
-  };
-}
+const stepOrder: SetupStep[] = ["intent", "travel", "audience", "preferences"];
 
 type StartTripPanelProps = {
   initialAudience?: Audience | null;
@@ -102,31 +35,43 @@ export default function StartTripPanel({
   onStartTrip,
 }: StartTripPanelProps) {
   const [step, setStep] = useState<SetupStep>("intent");
+  const [direction, setDirection] = useState<Direction>(1);
   const [intent, setIntent] = useState<Intent | null>(null);
   const [destination, setDestination] = useState<Destination | null>(null);
   const [destinationModalOpen, setDestinationModalOpen] = useState(false);
   const [mode, setMode] = useState<Mode | null>(null);
   const [audience, setAudience] = useState<Audience | null>(initialAudience);
   const [preferences, setPreferences] = useState<Preferences>(() =>
-    copyPreferences(presetPreferences[initialAudience ?? "custom"]),
+    copyTripPreferences(TRIP_PRESETS[initialAudience ?? "custom"]),
   );
+  const activePanelRef = useRef<HTMLDivElement>(null);
+  const firstRender = useRef(true);
 
-  const intentRef = useRef<HTMLElement>(null);
-  const travelRef = useRef<HTMLElement>(null);
-  const audienceRef = useRef<HTMLElement>(null);
-  const preferencesRef = useRef<HTMLElement>(null);
+  useLayoutEffect(() => {
+    const panel = activePanelRef.current;
+    if (!panel) return;
 
-  const panelRefs = useMemo(
-    () => ({
-      intent: intentRef,
-      travel: travelRef,
-      audience: audienceRef,
-      preferences: preferencesRef,
-    }),
-    [],
-  );
+    if (firstRender.current) {
+      gsap.set(panel, { xPercent: 0, autoAlpha: 1 });
+      firstRender.current = false;
+      return;
+    }
 
-  useSetupPanelAnimation(panelRefs, step);
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        panel,
+        { xPercent: direction * 14, autoAlpha: 0 },
+        { xPercent: 0, autoAlpha: 1, duration: 0.38, ease: "power3.out" },
+      );
+    }, panel);
+
+    return () => context.revert();
+  }, [step, direction]);
+
+  const goToStep = (next: SetupStep) => {
+    setDirection(stepOrder.indexOf(next) >= stepOrder.indexOf(step) ? 1 : -1);
+    setStep(next);
+  };
 
   const canStart =
     intent !== null &&
@@ -140,109 +85,98 @@ export default function StartTripPanel({
       setDestinationModalOpen(true);
       return;
     }
-
     setIntent("nearby");
     setDestination(null);
-    setStep("travel");
+    goToStep("travel");
   };
 
   const confirmDestination = (selectedDestination: Destination) => {
     setIntent("destination");
     setDestination(selectedDestination);
     setDestinationModalOpen(false);
-    setStep("travel");
+    goToStep("travel");
   };
 
   const selectMode = (selectedMode: Mode) => {
     setMode(selectedMode);
-    setStep("audience");
+    goToStep("audience");
   };
 
   const selectAudience = (selectedAudience: Audience) => {
     setAudience(selectedAudience);
-    setPreferences(copyPreferences(presetPreferences[selectedAudience]));
-    setStep("preferences");
+    setPreferences(copyTripPreferences(TRIP_PRESETS[selectedAudience]));
+    goToStep("preferences");
   };
 
   const start = () => {
     if (!intent || !mode || !audience || !canStart) return;
-
     if (intent === "destination") {
       if (!destination) return;
-
-      onStartTrip({
-        intent,
-        destination,
-        mode,
-        audience,
-        preferences,
-      });
+      onStartTrip({ intent, destination, mode, audience, preferences });
       return;
     }
-
-    onStartTrip({
-      intent,
-      mode,
-      audience,
-      preferences,
-    });
+    onStartTrip({ intent, mode, audience, preferences });
   };
 
-  return (
-    <main className="relative h-dvh min-h-0 w-full text-sc-text">
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,211,238,0.15),transparent_42%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-linear-to-b from-sc-panel/20 via-sc-bg/70 to-sc-bg"
-      />
-
-      <div className="relative mx-auto flex h-full min-h-0 w-full max-w-md flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:max-w-3xl sm:px-8">
-        <div className="flex shrink-0 items-center gap-2 text-sc-ocean">
-          <Sparkles className="size-4" />
-          <span className="text-sm font-semibold uppercase tracking-[0.18em]">
-            Start exploring
-          </span>
-        </div>
-
-        <div className="relative mt-5 min-h-0 flex-1">
-          <IntentStep
-            panelRef={intentRef}
-            onBack={onBack}
-            onSelectIntent={selectIntent}
-          />
+  const activeStep = (() => {
+    switch (step) {
+      case "intent":
+        return <IntentStep onBack={onBack} onSelectIntent={selectIntent} />;
+      case "travel":
+        return (
           <TransportationStep
-            panelRef={travelRef}
-            onBack={() => setStep("intent")}
+            onBack={() => goToStep("intent")}
             onSelectMode={selectMode}
           />
+        );
+      case "audience":
+        return (
           <AudienceStep
-            panelRef={audienceRef}
             audience={audience}
-            onBack={() => setStep("travel")}
+            onBack={() => goToStep("travel")}
             onSelectAudience={selectAudience}
           />
+        );
+      case "preferences":
+        return (
           <PreferencesStep
-            panelRef={preferencesRef}
             preferences={preferences}
-            onBack={() => setStep("audience")}
+            onBack={() => goToStep("audience")}
             onChange={setPreferences}
           />
+        );
+    }
+  })();
+
+  return (
+    <main className="relative h-dvh min-h-0 w-full text-cairn-text">
+      <div aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(210,162,76,0.11),transparent_42%)]" />
+      <div aria-hidden="true" className="absolute inset-0 bg-linear-to-b from-cairn-bg/20 via-cairn-bg/70 to-cairn-bg" />
+
+      <div className="relative mx-auto flex h-full min-h-0 w-full max-w-md flex-col px-5 pt-[max(1.25rem,env(safe-area-inset-top))] sm:max-w-3xl sm:px-8">
+        <div className="flex shrink-0 items-center gap-2 text-cairn-gold">
+          <Sparkles className="size-4" />
+          <span className="text-sm font-semibold uppercase tracking-[0.18em]">Start exploring</span>
         </div>
 
-        <footer className="shrink-0 border-t border-white/10 bg-sc-bg/95 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur">
+        <div className="relative mt-5 min-h-0 flex-1 overflow-hidden">
+          <div ref={activePanelRef} key={step} className="h-full min-h-0">
+            {activeStep}
+          </div>
+        </div>
+
+        <footer className="shrink-0 border-t border-cairn-border/70 bg-cairn-bg/95 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-4 backdrop-blur">
           <button
             type="button"
             disabled={!canStart}
             onClick={start}
-            className="flex h-12 w-full items-center justify-center rounded-xl px-4 font-semibold transition enabled:bg-sc-sun enabled:text-sc-bg enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-sc-muted"
+            className="flex h-12 w-full items-center justify-center rounded-xl px-4 font-semibold transition enabled:bg-cairn-gold enabled:text-cairn-bg enabled:hover:brightness-110 disabled:cursor-not-allowed disabled:bg-cairn-card/70 disabled:text-cairn-muted"
           >
             Start exploring
           </button>
         </footer>
       </div>
+
       <DestinationModal
         isOpen={destinationModalOpen}
         onClose={() => setDestinationModalOpen(false)}

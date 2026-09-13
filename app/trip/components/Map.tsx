@@ -23,7 +23,7 @@ export default function Map({
   onSelectPlace,
 }: MapProps) {
   return (
-    <div className="absolute inset-0 flex items-center justify-center bg-sc-raised">
+    <div className="absolute inset-0 flex items-center justify-center bg-cairn-card">
       <MapSection
         mode={mode}
         location={location}

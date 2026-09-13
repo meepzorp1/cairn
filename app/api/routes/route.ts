@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { logRouteRequest } from "@/app/lib/logRouteRequest";
 import type { Coordinates, Mode } from "@/app/trip/types";
 
 type RouteRequestBody = {
@@ -125,10 +126,28 @@ export async function POST(request: Request) {
       );
     }
 
+    const distanceMeters = route.distanceMeters ?? 0;
+    const duration = route.duration ?? null;
+    const encodedPolyline = route.polyline?.encodedPolyline ?? null;
+
+    if (process.env.ENABLE_SEARCH_LOGGING === "true") {
+      void logRouteRequest({
+        origin: body.origin,
+        destination: body.destination,
+        mode: body.mode,
+        intermediates,
+        distanceMeters,
+        duration,
+        encodedPolyline,
+      }).catch((error) => {
+        console.error("Route logging failed:", error);
+      });
+    }
+
     return NextResponse.json({
-      distanceMeters: route.distanceMeters ?? 0,
-      duration: route.duration ?? null,
-      encodedPolyline: route.polyline?.encodedPolyline ?? null,
+      distanceMeters,
+      duration,
+      encodedPolyline,
     });
   } catch (error) {
     console.error("Route request failed:", error);

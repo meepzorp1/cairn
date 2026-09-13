@@ -6,42 +6,29 @@ type HeroProps = {
 
 export default function Hero({ children }: HeroProps) {
   return (
-    <section className="HERO relative flex min-h-dvh w-full flex-col overflow-hidden bg-sc-bg text-sc-text">
+    <section className="relative min-h-dvh overflow-hidden bg-cairn-bg text-cairn-text">
       <div
-        className="absolute inset-0 bg-position-[570px_-21px] lg:bg-left"
-        style={{
-          backgroundImage: "url('/map.jpg')",
-        }}
+        aria-hidden="true"
+        className="absolute inset-0 bg-cover bg-center lg:bg-[position:center_28%]"
+        style={{ backgroundImage: "url('/map.jpg')" }}
       />
 
-      {/* Overall dark ocean tint */}
-      <div className="absolute inset-0 bg-sc-bg/30" />
-
-      {/* Bottom fade into the app background */}
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-sc-bg/80 to-sc-bg" />
-
-      {/* Desktop-side fade */}
+      {/* Keep the map present, but make the center readable and let it disappear into Cairn's dark UI. */}
+      <div aria-hidden="true" className="absolute inset-0 bg-cairn-bg/30" />
       <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to right, transparent 47%, color-mix(in oklch, var(--sc-panel) 65%, transparent) 73%, var(--sc-bg) 97%)",
-        }}
+        aria-hidden="true"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_31%,transparent_0%,rgba(10,15,12,0.10)_35%,rgba(10,15,12,0.78)_82%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 bg-linear-to-b from-cairn-bg/10 via-cairn-bg/30 to-cairn-bg"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-[44%] bg-linear-to-b from-transparent to-cairn-bg"
       />
 
-      {/* Ocean glow */}
-      <div className="absolute -right-24 top-32 h-72 w-72 rounded-full bg-sc-ocean/15 blur-3xl" />
-
-      {/* Featured-content glow */}
-      <div className="absolute -left-24 bottom-24 h-64 w-64 rounded-full bg-sc-feature/20 blur-3xl" />
-
-      {/* Warm Santa Cruz glow */}
-      <div className="absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-sc-sun/10 blur-3xl" />
-
-      {/* Final contrast layer */}
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-sc-bg/10 via-sc-bg/35 to-sc-bg/85" />
-
-      <div className="HEROCHILDREN relative z-10 flex min-h-dvh w-full flex-col justify-between px-2">
+      <div className="relative z-10 flex min-h-dvh w-full flex-col items-center justify-center gap-9 px-6 pb-12 pt-24 sm:pt-28">
         {children}
       </div>
     </section>

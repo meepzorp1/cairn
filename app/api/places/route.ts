@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import type { NearbyPlace } from "@/app/types/places";
+import { logSearchResults } from "@/app/place/engine/logSearchResults";
+import type { NearbyPlace } from "@/app/place/types";
 
 type PlacesRequestBody = {
   latitude?: number;
@@ -90,15 +91,43 @@ export async function POST(request: Request) {
           "Content-Type": "application/json",
           "X-Goog-Api-Key": apiKey,
           "X-Goog-FieldMask": [
-            "places.id",
-            "places.displayName",
-            "places.formattedAddress",
-            "places.location",
-            "places.rating",
-            "places.userRatingCount",
-            "places.primaryType",
-            "places.primaryTypeDisplayName",
-          ].join(","),
+  // Identity
+  "places.id",
+  "places.displayName",
+
+  // Location / address
+  "places.formattedAddress",
+  "places.shortFormattedAddress",
+  "places.location",
+  "places.viewport",
+
+  // Classification
+  "places.primaryType",
+  "places.primaryTypeDisplayName",
+  "places.types",
+
+  // Status
+  "places.businessStatus",
+
+  // Visuals
+  "places.photos",
+
+  // Useful structural/location info
+  "places.containingPlaces",
+  "places.subDestinations",
+  "places.entrances",
+  "places.navigationPoints",
+
+  // Google links
+  "places.googleMapsUri",
+  "places.googleMapsLinks",
+
+  // Misc useful metadata
+  "places.timeZone",
+  "places.utcOffsetMinutes",
+  "places.openingDate",
+  "places.accessibilityOptions",
+].join(","),
         },
 
         body: JSON.stringify({
@@ -145,6 +174,8 @@ export async function POST(request: Request) {
     const data =
       (await response.json()) as GoogleNearbySearchResponse;
 
+    console.log('places', data.places?.length, "results", data.places)
+
     const places: NearbyPlace[] = (data.places ?? [])
       .filter((place) => {
         return (
@@ -166,6 +197,18 @@ export async function POST(request: Request) {
         primaryTypeLabel:
           place.primaryTypeDisplayName?.text,
       }));
+
+    if (process.env.ENABLE_SEARCH_LOGGING === "true") {
+      void logSearchResults({
+        latitude,
+        longitude,
+        radius: safeRadius,
+        includedTypes,
+        places,
+      }).catch((error) => {
+        console.error("Search logging failed:", error);
+      });
+    }
 
     return NextResponse.json({
       places,

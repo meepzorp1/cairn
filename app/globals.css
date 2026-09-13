@@ -3,54 +3,51 @@
 :root {
   color-scheme: dark;
 
-  /* Santa Cruz dark palette — OKLCH keeps lightness changes predictable. */
-  --sc-bg: oklch(0.155 0.018 250);
-  --sc-panel: oklch(0.205 0.025 248);
-  --sc-raised: oklch(0.265 0.03 245);
-  --sc-elevated: oklch(0.325 0.035 242);
+  /* Cairn field-guide palette: forest ink, warm paper, antique brass. */
+  --cairn-outer: #0a0f0c;
+  --cairn-bg: #152922;
+  --cairn-card: #1c332b;
+  --cairn-raised: #20392f;
+  --cairn-border: #2e4b3f;
 
-  --sc-text: oklch(0.955 0.012 85);
-  --sc-muted: oklch(0.735 0.025 235);
-  --sc-line: oklch(0.41 0.035 240);
+  --cairn-text: #f2ecda;
+  --cairn-muted: #9fb2a6;
 
-  /* Blue and warm gold remain distinguishable under common color-vision deficiencies. */
-  --sc-ocean: oklch(0.78 0.115 220);
-  --sc-ocean-soft: oklch(0.34 0.065 225);
-  --sc-sun: oklch(0.84 0.135 82);
-  --sc-sun-soft: oklch(0.39 0.075 82);
+  --cairn-gold: #d2a24c;
+  --cairn-gold-soft: rgba(210, 162, 76, 0.16);
+  --cairn-gold-faint: rgba(210, 162, 76, 0.08);
 
-  /* Purple is used for special/featured content instead of relying on red vs green. */
-  --sc-feature: oklch(0.73 0.135 315);
-  --sc-feature-soft: oklch(0.34 0.075 315);
+  /* Secondary states keep strong lightness contrast so hue is never the only cue. */
+  --cairn-feature: #c6d3c9;
+  --cairn-feature-soft: rgba(198, 211, 201, 0.12);
+  --cairn-danger: #e09a82;
+  --cairn-danger-soft: rgba(224, 154, 130, 0.14);
 
-  --sc-danger: oklch(0.72 0.15 25);
-  --sc-danger-soft: oklch(0.34 0.075 25);
-
-  --background: var(--sc-bg);
-  --foreground: var(--sc-text);
+  --background: var(--cairn-bg);
+  --foreground: var(--cairn-text);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --color-sc-bg: var(--sc-bg);
-  --color-sc-panel: var(--sc-panel);
-  --color-sc-raised: var(--sc-raised);
-  --color-sc-elevated: var(--sc-elevated);
-  --color-sc-text: var(--sc-text);
-  --color-sc-muted: var(--sc-muted);
-  --color-sc-line: var(--sc-line);
-  --color-sc-ocean: var(--sc-ocean);
-  --color-sc-ocean-soft: var(--sc-ocean-soft);
-  --color-sc-sun: var(--sc-sun);
-  --color-sc-sun-soft: var(--sc-sun-soft);
-  --color-sc-feature: var(--sc-feature);
-  --color-sc-feature-soft: var(--sc-feature-soft);
-  --color-sc-danger: var(--sc-danger);
-  --color-sc-danger-soft: var(--sc-danger-soft);
+  --color-cairn-outer: var(--cairn-outer);
+  --color-cairn-bg: var(--cairn-bg);
+  --color-cairn-card: var(--cairn-card);
+  --color-cairn-raised: var(--cairn-raised);
+  --color-cairn-border: var(--cairn-border);
+  --color-cairn-text: var(--cairn-text);
+  --color-cairn-muted: var(--cairn-muted);
+  --color-cairn-gold: var(--cairn-gold);
+  --color-cairn-gold-soft: var(--cairn-gold-soft);
+  --color-cairn-gold-faint: var(--cairn-gold-faint);
+  --color-cairn-feature: var(--cairn-feature);
+  --color-cairn-feature-soft: var(--cairn-feature-soft);
+  --color-cairn-danger: var(--cairn-danger);
+  --color-cairn-danger-soft: var(--cairn-danger-soft);
 
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-work-sans);
+  --font-display: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
 }
 
@@ -60,12 +57,37 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cairn-outer);
+  color: var(--cairn-text);
+  font-family: var(--font-work-sans), Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
 ::selection {
-  background: color-mix(in oklch, var(--sc-ocean) 35%, transparent);
-  color: var(--sc-text);
+  background: color-mix(in srgb, var(--cairn-gold) 38%, transparent);
+  color: var(--cairn-text);
+}
+
+/*
+ * Subtle warm grain, like paper under the antique-map aesthetic.
+ * Deliberately doesn't set `position` itself - this file's rules are
+ * unlayered, so they'd always outrank Tailwind's own utility layer
+ * (e.g. `absolute`) in the cascade regardless of source order. Every
+ * usage already establishes its own positioning context.
+ */
+.texture-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.82 0 0 0 0 0.64 0 0 0 0 0.3 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }

@@ -14,17 +14,17 @@ export type Audience =
 export type Budget = "low" | "medium" | "high" | "any";
 
 export type InterestId =
-  | "restaurants"
+  | "food"
   | "coffee"
-  | "study"
-  | "parks"
-  | "beaches"
-  | "attractions"
-  | "shopping"
-  | "museums"
-  | "live-events"
   | "nightlife"
-  | "filming-locations"
+  | "outdoors"
+  | "beaches-water"
+  | "hiking"
+  | "arts-culture"
+  | "history"
+  | "shopping"
+  | "entertainment"
+  | "family"
   | "hidden-gems";
 
 export type Preferences = {

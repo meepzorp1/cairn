@@ -17,7 +17,7 @@ export default function TripOption({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-4 text-sm font-semibold text-sc-muted transition hover:border-sc-ocean hover:bg-sc-ocean hover:text-sc-bg active:scale-[0.98]"
+      className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl border border-cairn-border/70 bg-cairn-card/60 px-3 py-4 text-sm font-semibold text-cairn-muted transition hover:border-cairn-gold hover:bg-cairn-gold hover:text-cairn-bg active:scale-[0.98]"
     >
       {icon}
       {label}

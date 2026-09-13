@@ -4,9 +4,7 @@ import { useRef } from "react";
 import { Compass } from "lucide-react";
 import gsap from "gsap";
 
-type ReadyButtonProps = {
-  onClick: () => void;
-};
+type ReadyButtonProps = { onClick: () => void };
 
 export default function ReadyButton({ onClick }: ReadyButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -14,83 +12,17 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
   const iconRef = useRef<SVGSVGElement>(null);
 
   const handlePress = () => {
-    gsap.killTweensOf([
-      buttonRef.current,
-      glowRef.current,
-      iconRef.current,
-    ]);
-
-    gsap.to(buttonRef.current, {
-      scale: 0.96,
-      y: 2,
-      duration: 0.16,
-      ease: "power2.out",
-    });
-
-    gsap.to(glowRef.current, {
-      opacity: 0.8,
-      scale: 1.08,
-      duration: 0.2,
-      ease: "power2.out",
-    });
-
-    gsap.to(iconRef.current, {
-      rotate: -90,
-      scale: 0.92,
-      duration: 0.16,
-      ease: "power2.out",
-    });
+    gsap.killTweensOf([buttonRef.current, glowRef.current, iconRef.current]);
+    gsap.to(buttonRef.current, { scale: 0.97, y: 2, duration: 0.14, ease: "power2.out" });
+    gsap.to(glowRef.current, { opacity: 0.7, scale: 1.05, duration: 0.18 });
+    gsap.to(iconRef.current, { rotate: -55, duration: 0.18, ease: "power2.out" });
   };
 
   const handleRelease = () => {
-    gsap.killTweensOf([
-      buttonRef.current,
-      glowRef.current,
-      iconRef.current,
-    ]);
-
-    const timeline = gsap.timeline();
-
-    timeline
-      .to(buttonRef.current, {
-        scale: 1.08,
-        y: -2,
-        duration: 0.16,
-        ease: "back.out(2.8)",
-      })
-      .to(buttonRef.current, {
-        scale: 1,
-        y: 0,
-        duration: 0.22,
-        ease: "power2.out",
-      });
-
-    gsap.to(glowRef.current, {
-      opacity: 0,
-      scale: 1.3,
-      duration: 0.4,
-      ease: "power2.out",
-    });
-
-    gsap.fromTo(
-      iconRef.current,
-      {
-        rotate: 12,
-        scale: 1.25,
-      },
-      {
-        rotate: 0,
-        scale: 1,
-        duration: 0.4,
-        ease: "elastic.out(1, 0.45)",
-      },
-    );
-  };
-
-  const handleClick = () => {
-    handleRelease();
-    console.log('clicked')
-    onClick();
+    gsap.killTweensOf([buttonRef.current, glowRef.current, iconRef.current]);
+    gsap.to(buttonRef.current, { scale: 1, y: 0, duration: 0.24, ease: "back.out(2)" });
+    gsap.to(glowRef.current, { opacity: 0, scale: 1.2, duration: 0.35 });
+    gsap.to(iconRef.current, { rotate: 0, duration: 0.35, ease: "back.out(2)" });
   };
 
   return (
@@ -100,27 +32,20 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
       onPointerDown={handlePress}
       onPointerUp={handleRelease}
       onPointerCancel={handleRelease}
-      onPointerLeave={(event) => {
-        if (event.buttons === 1) {
-          handleRelease();
-        }
+      onPointerLeave={(event) => event.buttons === 1 && handleRelease()}
+      onClick={() => {
+        handleRelease();
+        onClick();
       }}
-      onClick={handleClick}
-      className="absolute inset-x-4 bottom-6 flex min-h-14 items-center justify-center gap-3 overflow-hidden rounded-full border border-sc-sun/40 bg-sc-raised px-8 py-4 font-semibold text-sc-text shadow-lg transition-colors hover:border-sc-sun/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-sun lg:right-13 lg:left-auto lg:w-80"
+      className="group relative flex min-h-14 w-full max-w-xs items-center justify-center gap-3 overflow-hidden rounded-full bg-cairn-gold px-8 py-4 font-semibold text-cairn-bg shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-colors hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cairn-bg"
     >
       <span
         ref={glowRef}
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-sc-sun-soft opacity-0 blur-xl"
+        className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-cairn-text/20 opacity-0 blur-xl"
       />
-
       <span>Are You Ready?</span>
-
-      <Compass
-        ref={iconRef}
-        aria-hidden="true"
-        className="size-5 text-sc-sun"
-      />
+      <Compass ref={iconRef} aria-hidden="true" className="size-5 text-cairn-bg" />
     </button>
   );
 }

@@ -3,6 +3,11 @@ export type Location = {
   longitude: number;
 };
 
+export type Coordinates = {
+  latitude: number;
+  longitude: number;
+};
+
 export type Category =
   | "beach"
   | "nature"
@@ -61,4 +66,9 @@ export type NearbyPlace = {
   userRatingCount?: number;
   primaryType?: string;
   primaryTypeLabel?: string;
+};
+
+export type PlacesApiResponse = {
+  places?: NearbyPlace[];
+  error?: string;
 };

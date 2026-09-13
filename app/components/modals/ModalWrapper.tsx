@@ -73,7 +73,7 @@ export default function Modal({
     <div
       role="presentation"
       onMouseDown={handleBackdropClick}
-      className={`fixed inset-0 z-100 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm ${className}`}
+      className={`fixed inset-0 z-100 flex items-center justify-center bg-cairn-outer/60 p-4 backdrop-blur-sm ${className}`}
     >
       <div
         ref={panelRef}
@@ -84,7 +84,7 @@ export default function Modal({
           description ? "modal-description" : undefined
         }
         tabIndex={-1}
-        className={`relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-3xl border border-white/10 bg-sc-panel p-6 text-sc-text shadow-2xl outline-none ${panelClassName}`}
+        className={`relative max-h-[calc(100dvh-2rem)] w-full max-w-lg overflow-y-auto rounded-3xl border border-cairn-border/70 bg-cairn-bg p-6 text-cairn-text shadow-2xl outline-none ${panelClassName}`}
         onMouseDown={(event) => event.stopPropagation()}
       >
         {showCloseButton && (
@@ -92,7 +92,7 @@ export default function Modal({
             type="button"
             onClick={onClose}
             aria-label="Close modal"
-            className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full border border-white/10 bg-black/20 text-sc-muted transition hover:border-white/20 hover:text-sc-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sc-sun"
+            className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full border border-cairn-border/70 bg-cairn-outer/35 text-cairn-muted transition hover:border-cairn-text/20 hover:text-cairn-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold"
           >
             <X className="size-5" />
           </button>
@@ -103,7 +103,7 @@ export default function Modal({
             {title && (
               <h2
                 id="modal-title"
-                className="text-2xl font-bold tracking-tight"
+                className="font-display text-3xl font-medium tracking-[-0.02em] text-cairn-text"
               >
                 {title}
               </h2>
@@ -112,7 +112,7 @@ export default function Modal({
             {description && (
               <p
                 id="modal-description"
-                className="mt-2 text-sm leading-6 text-sc-muted"
+                className="mt-2 text-sm leading-6 text-cairn-muted"
               >
                 {description}
               </p>

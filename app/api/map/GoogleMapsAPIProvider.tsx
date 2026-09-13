@@ -15,13 +15,13 @@ export default function GoogleMapsProvider({
 
   if (!apiKey) {
     return (
-      <div className="flex min-h-80 items-center justify-center bg-slate-950 p-6 text-center text-white">
+      <div className="flex min-h-80 items-center justify-center bg-cairn-outer p-6 text-center text-cairn-text">
         <div>
           <p className="font-semibold">
             Google Maps is unavailable
           </p>
 
-          <p className="mt-2 text-sm text-white/60">
+          <p className="mt-2 text-sm text-cairn-muted">
             NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is missing.
           </p>
         </div>

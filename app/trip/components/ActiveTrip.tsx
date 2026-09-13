@@ -30,6 +30,7 @@ export default function ActiveTrip({ trip, onEndTrip }: ActiveTripProps) {
     placesError,
     refresh,
     discoveries,
+    destinationDiscovery: initialDestinationDiscovery,
     selectedDiscovery,
     selectedDiscoveryId,
     selectDiscovery,
@@ -40,12 +41,17 @@ export default function ActiveTrip({ trip, onEndTrip }: ActiveTripProps) {
 
   const destinationPlace =
     trip.intent === "destination"
-      ? discoveries.find(({ place }) => place.id === trip.destination.placeId)?.place ?? null
+      ? initialDestinationDiscovery?.place ?? null
       : activeDestination;
 
-  const destinationDiscovery = destinationPlace
-    ? discoveries.find(({ place }) => place.id === destinationPlace.id) ?? null
-    : null;
+  const destinationDiscovery =
+    trip.intent === "destination"
+      ? initialDestinationDiscovery
+      : destinationPlace
+        ? discoveries.find(
+            ({ place }) => place.id === destinationPlace.id,
+          ) ?? null
+        : null;
 
   const hasActiveRoute = destinationPlace !== null;
 
@@ -73,22 +79,22 @@ export default function ActiveTrip({ trip, onEndTrip }: ActiveTripProps) {
 
   if (!location) {
     return (
-      <section className="flex min-h-dvh flex-col items-center justify-center bg-sc-bg px-6 text-center text-sc-text">
+      <section className="flex min-h-dvh flex-col items-center justify-center bg-cairn-bg px-6 text-center text-cairn-text">
         <div className="max-w-sm">
-          <h1 className="text-xl font-semibold">
+          <h1 className="font-display text-2xl font-medium text-cairn-text">
             {status === "unavailable" || status === "denied"
               ? "Location unavailable"
               : "Finding your location"}
           </h1>
 
-          <p className="mt-3 text-sm text-sc-muted">
+          <p className="mt-3 text-sm text-cairn-muted">
             {locationError ?? "Allow location access so we can find real places near you."}
           </p>
 
           <button
             type="button"
             onClick={startTracking}
-            className="mt-5 rounded-xl bg-sc-ocean px-4 py-3 font-semibold text-white"
+            className="mt-5 rounded-xl bg-cairn-gold px-4 py-3 font-semibold text-cairn-text"
           >
             Try again
           </button>
@@ -98,7 +104,7 @@ export default function ActiveTrip({ trip, onEndTrip }: ActiveTripProps) {
   }
 
   return (
-    <section className="flex min-h-dvh flex-col bg-sc-bg text-sc-text">
+    <section className="flex min-h-dvh flex-col bg-cairn-bg text-cairn-text">
       <MapHeader
         trip={trip}
         destinationPlace={destinationPlace}

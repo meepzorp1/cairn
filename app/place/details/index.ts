@@ -1,0 +1,1 @@
+export { getPlaceDetails } from "./getPlaceDetails";

@@ -1,33 +1,31 @@
 "use client";
 
-import type { Ref } from "react";
+import { SlidersHorizontal } from "lucide-react";
 import type { InterestId, Preferences } from "../../types";
 import StepHeader from "../components/StepHeader";
 
 const interests: Array<{ id: InterestId; label: string }> = [
-  { id: "restaurants", label: "Food" },
+  { id: "food", label: "Food" },
   { id: "coffee", label: "Coffee" },
-  { id: "study", label: "Study spots" },
-  { id: "parks", label: "Parks" },
-  { id: "beaches", label: "Beaches" },
-  { id: "attractions", label: "Attractions" },
-  { id: "shopping", label: "Shopping" },
-  { id: "museums", label: "Museums" },
-  { id: "live-events", label: "Live events" },
   { id: "nightlife", label: "Nightlife" },
-  { id: "filming-locations", label: "Film locations" },
+  { id: "outdoors", label: "Outdoors" },
+  { id: "beaches-water", label: "Beaches & Water" },
+  { id: "hiking", label: "Hiking" },
+  { id: "arts-culture", label: "Arts & Culture" },
+  { id: "history", label: "History" },
+  { id: "shopping", label: "Shopping" },
+  { id: "entertainment", label: "Entertainment" },
+  { id: "family", label: "Family" },
   { id: "hidden-gems", label: "Hidden gems" },
 ];
 
 type PreferencesStepProps = {
-  panelRef: Ref<HTMLElement>;
   preferences: Preferences;
   onBack: () => void;
   onChange: (preferences: Preferences) => void;
 };
 
 export default function PreferencesStep({
-  panelRef,
   preferences,
   onBack,
   onChange,
@@ -45,8 +43,7 @@ export default function PreferencesStep({
 
   return (
     <section
-      ref={panelRef}
-      className="absolute inset-0 flex min-h-0 flex-col"
+      className="flex h-full min-h-0 flex-col"
       aria-label="Choose preferences"
     >
       <StepHeader
@@ -54,10 +51,12 @@ export default function PreferencesStep({
         description="Fine-tune the suggestions. You can change these again while exploring."
         onBack={onBack}
         backLabel="Return to experience choices"
+        eyebrow="Fine-tune it"
+        eyebrowIcon={<SlidersHorizontal className="size-3.5" />}
       />
 
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4 pr-1">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-sc-muted">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-cairn-muted">
           Interests
         </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -72,8 +71,8 @@ export default function PreferencesStep({
                 onClick={() => toggleInterest(id)}
                 className={`min-h-14 rounded-xl border px-3 py-2 text-sm font-semibold transition active:scale-[0.98] ${
                   selected
-                    ? "border-sc-sun bg-sc-sun-soft text-sc-text"
-                    : "border-white/10 bg-white/5 text-sc-muted hover:bg-white/10"
+                    ? "border-cairn-gold bg-cairn-gold-soft text-cairn-text"
+                    : "border-cairn-border/70 bg-cairn-card/60 text-cairn-muted hover:bg-cairn-card/70"
                 }`}
               >
                 {label}

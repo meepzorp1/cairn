@@ -37,27 +37,103 @@ type UseCurrentLocationResult = {
   stopTracking: () => void;
 };
 
+const MINIMUM_MOVEMENT_METERS = 10;
+const MAX_STATIONARY_DEADBAND_METERS = 30;
+const FAST_MOVEMENT_METERS_PER_SECOND = 2.5;
+
+function getDistanceInMeters(
+  first: CurrentLocation,
+  second: CurrentLocation,
+) {
+  const earthRadius = 6_371_000;
+  const latitude1 = (first.latitude * Math.PI) / 180;
+  const latitude2 = (second.latitude * Math.PI) / 180;
+  const latitudeDifference =
+    ((second.latitude - first.latitude) * Math.PI) / 180;
+  const longitudeDifference =
+    ((second.longitude - first.longitude) * Math.PI) / 180;
+
+  const a =
+    Math.sin(latitudeDifference / 2) ** 2 +
+    Math.cos(latitude1) *
+      Math.cos(latitude2) *
+      Math.sin(longitudeDifference / 2) ** 2;
+
+  return (
+    earthRadius *
+    2 *
+    Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  );
+}
+
+function smoothLocation(
+  current: CurrentLocation,
+  incoming: CurrentLocation,
+): CurrentLocation {
+  const distance = getDistanceInMeters(
+    current,
+    incoming,
+  );
+
+  // GPS fixes wander while the device is stationary. Treat movement
+  // inside a portion of the reported accuracy radius as noise.
+  const deadband = Math.max(
+    MINIMUM_MOVEMENT_METERS,
+    Math.min(
+      Math.max(current.accuracy, incoming.accuracy) * 0.5,
+      MAX_STATIONARY_DEADBAND_METERS,
+    ),
+  );
+
+  if (distance <= deadband) {
+    return {
+      ...current,
+      accuracy: Math.min(
+        current.accuracy,
+        incoming.accuracy,
+      ),
+      heading: incoming.heading ?? current.heading,
+      speed: incoming.speed ?? current.speed,
+      timestamp: incoming.timestamp,
+    };
+  }
+
+  // Follow genuine movement quickly when driving/biking, but damp
+  // noisy walking/stationary fixes.
+  const weight =
+    (incoming.speed ?? 0) >=
+    FAST_MOVEMENT_METERS_PER_SECOND
+      ? 0.75
+      : 0.4;
+
+  return {
+    ...incoming,
+    latitude:
+      current.latitude +
+      (incoming.latitude - current.latitude) * weight,
+    longitude:
+      current.longitude +
+      (incoming.longitude - current.longitude) * weight,
+  };
+}
+
 export default function useCurrentLocation({
   enabled = true,
   highAccuracy = true,
 }: UseCurrentLocationOptions = {}): UseCurrentLocationResult {
   const [location, setLocation] =
     useState<CurrentLocation | null>(null);
-
   const [status, setStatus] = useState<LocationStatus>(
     enabled ? "requesting" : "idle",
   );
-
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    null,
+  );
 
   const watchIdRef = useRef<number | null>(null);
+  const acceptedLocationRef =
+    useRef<CurrentLocation | null>(null);
 
-  /**
-   * Clears the browser watcher only.
-   *
-   * This intentionally does not update React state, so it is safe
-   * to call during effect cleanup.
-   */
   const clearLocationWatch = useCallback(() => {
     if (
       watchIdRef.current === null ||
@@ -67,16 +143,12 @@ export default function useCurrentLocation({
       return;
     }
 
-    navigator.geolocation.clearWatch(watchIdRef.current);
+    navigator.geolocation.clearWatch(
+      watchIdRef.current,
+    );
     watchIdRef.current = null;
   }, []);
 
-  /**
-   * Starts the external geolocation subscription.
-   *
-   * State updates happen from the browser callbacks rather than
-   * synchronously from the effect.
-   */
   const createLocationWatch = useCallback(() => {
     if (
       typeof navigator === "undefined" ||
@@ -87,63 +159,70 @@ export default function useCurrentLocation({
 
     clearLocationWatch();
 
-    watchIdRef.current = navigator.geolocation.watchPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracy: position.coords.accuracy,
-          heading: position.coords.heading,
-          speed: position.coords.speed,
-          timestamp: position.timestamp,
-        });
+    watchIdRef.current =
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const incoming: CurrentLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            heading: position.coords.heading,
+            speed: position.coords.speed,
+            timestamp: position.timestamp,
+          };
 
-        setStatus("tracking");
-        setError(null);
-      },
-      (positionError) => {
-        switch (positionError.code) {
-          case positionError.PERMISSION_DENIED:
-            clearLocationWatch();
-            setStatus("denied");
-            setError(
-              "Location permission was denied. Enable it in your browser settings to use live exploration.",
-            );
-            break;
+          const current =
+            acceptedLocationRef.current;
 
-          case positionError.POSITION_UNAVAILABLE:
-            setStatus("unavailable");
-            setError(
-              "Your current location could not be determined.",
-            );
-            break;
+          const accepted = current
+            ? smoothLocation(current, incoming)
+            : incoming;
 
-          case positionError.TIMEOUT:
-            setStatus("unavailable");
-            setError(
-              "Finding your location took too long. Try again.",
-            );
-            break;
+          acceptedLocationRef.current = accepted;
+          setLocation(accepted);
 
-          default:
-            setStatus("unavailable");
-            setError(
-              "Something went wrong while finding your location.",
-            );
-        }
-      },
-      {
-        enableHighAccuracy: highAccuracy,
-        timeout: 15_000,
-        maximumAge: 5_000,
-      },
-    );
+          setStatus("tracking");
+          setError(null);
+        },
+        (positionError) => {
+          switch (positionError.code) {
+            case positionError.PERMISSION_DENIED:
+              clearLocationWatch();
+              setStatus("denied");
+              setError(
+                "Location permission was denied. Enable it in your browser settings to use live exploration.",
+              );
+              break;
+
+            case positionError.POSITION_UNAVAILABLE:
+              setStatus("unavailable");
+              setError(
+                "Your current location could not be determined.",
+              );
+              break;
+
+            case positionError.TIMEOUT:
+              setStatus("unavailable");
+              setError(
+                "Finding your location took too long. Try again.",
+              );
+              break;
+
+            default:
+              setStatus("unavailable");
+              setError(
+                "Something went wrong while finding your location.",
+              );
+          }
+        },
+        {
+          enableHighAccuracy: highAccuracy,
+          timeout: 15_000,
+          maximumAge: 5_000,
+        },
+      );
   }, [clearLocationWatch, highAccuracy]);
 
-  /**
-   * Public command used by buttons or other event handlers.
-   * State updates are appropriate here.
-   */
   const startTracking = useCallback(() => {
     if (
       typeof navigator === "undefined" ||
@@ -158,13 +237,9 @@ export default function useCurrentLocation({
 
     setStatus("requesting");
     setError(null);
-
     createLocationWatch();
   }, [createLocationWatch]);
 
-  /**
-   * Public command used by buttons or other event handlers.
-   */
   const stopTracking = useCallback(() => {
     clearLocationWatch();
     setStatus("idle");
@@ -172,9 +247,7 @@ export default function useCurrentLocation({
   }, [clearLocationWatch]);
 
   useEffect(() => {
-    if (!enabled) {
-      return;
-    }
+    if (!enabled) return;
 
     createLocationWatch();
 
@@ -187,8 +260,8 @@ export default function useCurrentLocation({
 
   return {
     location,
-    status: enabled ? status : "idle",
-    error: enabled ? error : null,
+    status,
+    error,
     startTracking,
     stopTracking,
   };

@@ -1,14 +1,13 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { NearbyPlace } from "@/app/place";
-import type { Coordinates } from "../types";
+import {
+  normalizeNearbyPlace,
+  type NearbyPlace,
+  type Place,
+} from "@/app/place";
+import type { Coordinates } from "@/app/place/types";
 
 type UseNearbyPlacesOptions = {
   location: Coordinates | null;
@@ -28,18 +27,12 @@ type LoadPlacesOptions = {
 
 const MINIMUM_REFRESH_DISTANCE_METERS = 300;
 
-function getDistanceInMeters(
-  first: Coordinates,
-  second: Coordinates,
-) {
+function getDistanceInMeters(first: Coordinates, second: Coordinates) {
   const earthRadius = 6_371_000;
-
   const latitude1 = (first.latitude * Math.PI) / 180;
   const latitude2 = (second.latitude * Math.PI) / 180;
-
   const latitudeDifference =
     ((second.latitude - first.latitude) * Math.PI) / 180;
-
   const longitudeDifference =
     ((second.longitude - first.longitude) * Math.PI) / 180;
 
@@ -49,10 +42,7 @@ function getDistanceInMeters(
       Math.cos(latitude2) *
       Math.sin(longitudeDifference / 2) ** 2;
 
-  const c =
-    2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-  return earthRadius * c;
+  return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 async function fetchNearbyPlaces({
@@ -65,7 +55,7 @@ async function fetchNearbyPlaces({
   radius: number;
   includedTypes?: string[];
   signal?: AbortSignal;
-}): Promise<NearbyPlace[]> {
+}): Promise<Place[]> {
   const response = await fetch("/api/places", {
     method: "POST",
     headers: {
@@ -83,12 +73,10 @@ async function fetchNearbyPlaces({
   const data = (await response.json()) as PlacesApiResponse;
 
   if (!response.ok) {
-    throw new Error(
-      data.error ?? "Failed to load nearby places.",
-    );
+    throw new Error(data.error ?? "Failed to load nearby places.");
   }
 
-  return data.places ?? [];
+  return (data.places ?? []).map(normalizeNearbyPlace);
 }
 
 export default function useNearbyPlaces({
@@ -96,40 +84,28 @@ export default function useNearbyPlaces({
   radius = 1500,
   includedTypes,
 }: UseNearbyPlacesOptions) {
-  const [places, setPlaces] = useState<NearbyPlace[]>([]);
+  // From this point upward, the app only deals in canonical Place objects.
+  const [places, setPlaces] = useState<Place[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const lastSearchLocationRef =
-    useRef<Coordinates | null>(null);
+  const lastSearchLocationRef = useRef<Coordinates | null>(null);
 
-  const includedTypesKey =
-    includedTypes?.slice().sort().join(",") ?? "";
+  const includedTypesKey = includedTypes?.slice().sort().join(",") ?? "";
 
   const loadPlaces = useCallback(
-    async ({
-      force = false,
-      signal,
-    }: LoadPlacesOptions = {}) => {
-      if (!location) {
-        return;
-      }
+    async ({ force = false, signal }: LoadPlacesOptions = {}) => {
+      if (!location) return;
 
       const lastLocation = lastSearchLocationRef.current;
 
       if (!force && lastLocation) {
-        const distance = getDistanceInMeters(
-          lastLocation,
-          location,
-        );
+        const distance = getDistanceInMeters(lastLocation, location);
 
         if (distance < MINIMUM_REFRESH_DISTANCE_METERS) {
           return;
         }
       }
-
-      setIsLoading(true);
-      setError(null);
 
       try {
         const nextPlaces = await fetchNearbyPlaces({
@@ -142,11 +118,10 @@ export default function useNearbyPlaces({
           signal,
         });
 
-        if (signal?.aborted) {
-          return;
-        }
+        if (signal?.aborted) return;
 
         setPlaces(nextPlaces);
+        setError(null);
         lastSearchLocationRef.current = location;
       } catch (caughtError) {
         if (
@@ -162,44 +137,30 @@ export default function useNearbyPlaces({
             ? caughtError.message
             : "Failed to load nearby places.",
         );
-      } finally {
-        if (!signal?.aborted) {
-          setIsLoading(false);
-        }
       }
     },
-    [
-      location,
-      radius,
-      includedTypesKey,
-    ],
+    [location, radius, includedTypesKey],
   );
 
-useEffect(() => {
-  if (!location) {
-    return;
-  }
+  useEffect(() => {
+    if (!location) return;
 
-  const controller = new AbortController();
+    const controller = new AbortController();
+    let isDisposed = false;
 
-  const run = async () => {
-    await Promise.resolve();
+    queueMicrotask(() => {
+      if (isDisposed) return;
 
-    if (controller.signal.aborted) {
-      return;
-    }
-
-    await loadPlaces({
-      signal: controller.signal,
+      void loadPlaces({
+        signal: controller.signal,
+      });
     });
-  };
 
-  void run();
-
-  return () => {
-    controller.abort();
-  };
-}, [location, loadPlaces]);
+    return () => {
+      isDisposed = true;
+      controller.abort();
+    };
+  }, [location, loadPlaces]);
 
   return {
     places,

@@ -1,15 +1,15 @@
 import type {
  Audience,
   Preferences,
-} from "@/app/types/trip";
+} from "@/app/trip/types";
 
 export const TRIP_PRESETS: Record<Audience, Preferences> = {
   local: {
     interests: [
-      "restaurants",
+      "food",
       "coffee",
-      "parks",
-      "attractions",
+      "outdoors",
+      "history",
       "hidden-gems",
     ],
     budget: "any",
@@ -25,11 +25,11 @@ export const TRIP_PRESETS: Record<Audience, Preferences> = {
 
   student: {
     interests: [
-      "restaurants",
+      "food",
       "coffee",
-      "study",
-      "parks",
-      "live-events",
+      "outdoors",
+      "entertainment",
+      "hidden-gems",
     ],
     budget: "low",
     misc: {
@@ -44,9 +44,9 @@ export const TRIP_PRESETS: Record<Audience, Preferences> = {
 
   visitor: {
     interests: [
-      "restaurants",
-      "beaches",
-      "attractions",
+      "food",
+      "beaches-water",
+      "history",
       "shopping",
       "hidden-gems",
     ],
@@ -63,9 +63,9 @@ export const TRIP_PRESETS: Record<Audience, Preferences> = {
 
   lostboys: {
     interests: [
-      "filming-locations",
-      "attractions",
-      "restaurants",
+      "history",
+      "entertainment",
+      "food",
       "hidden-gems",
     ],
     budget: "any",
@@ -80,7 +80,7 @@ export const TRIP_PRESETS: Record<Audience, Preferences> = {
   },
 
   custom: {
-    interests: ["restaurants", "coffee", "parks"],
+    interests: ["food", "coffee", "outdoors"],
     budget: "any",
     misc: {
       openNow: true,

@@ -107,8 +107,8 @@ export default function EarlyAccessModal({
       aria-hidden={!isOpen}
       className={`fixed inset-0 z-100 flex items-center justify-center px-4 transition-all duration-200 ${
         isOpen
-          ? "visible bg-slate-950/75 opacity-100 backdrop-blur-sm"
-          : "invisible bg-slate-950/0 opacity-0"
+          ? "visible bg-cairn-outer/75 opacity-100 backdrop-blur-sm"
+          : "invisible bg-cairn-outer/0 opacity-0"
       }`}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) {
@@ -121,7 +121,7 @@ export default function EarlyAccessModal({
         aria-modal="true"
         aria-labelledby="early-access-title"
         aria-describedby="early-access-description"
-        className={`relative w-full max-w-md rounded-2xl border border-white/15 bg-slate-900 p-6 shadow-2xl transition-all duration-200 sm:p-8 ${
+        className={`relative w-full max-w-md rounded-2xl border border-cairn-border bg-cairn-bg p-6 shadow-2xl transition-all duration-200 sm:p-8 ${
           isOpen
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-3 scale-[0.98] opacity-0"
@@ -131,7 +131,7 @@ export default function EarlyAccessModal({
           type="button"
           onClick={handleClose}
           aria-label="Close early access form"
-          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+          className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full text-cairn-muted transition-colors hover:bg-cairn-card/70 hover:text-cairn-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold"
         >
           <X
             aria-hidden="true"
@@ -143,20 +143,20 @@ export default function EarlyAccessModal({
           <SuccessMessage onClose={handleClose} />
         ) : (
           <>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-amber-300">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-cairn-gold">
               Cairn
             </p>
 
             <h2
               id="early-access-title"
-              className="pr-10 text-2xl font-bold text-white sm:text-3xl"
+              className="pr-10 font-display text-3xl font-medium text-cairn-text sm:text-4xl"
             >
               Request early access
             </h2>
 
             <p
               id="early-access-description"
-              className="mt-3 text-sm leading-6 text-slate-300 sm:text-base"
+              className="mt-3 text-sm leading-6 text-cairn-muted sm:text-base"
             >
               Send us your email and we&apos;ll let you know when
               Cairn is ready.
@@ -169,7 +169,7 @@ export default function EarlyAccessModal({
               <div>
                 <label
                   htmlFor="early-access-email"
-                  className="mb-2 block text-sm font-medium text-white"
+                  className="mb-2 block text-sm font-medium text-cairn-text"
                 >
                   Email address
                 </label>
@@ -191,14 +191,14 @@ export default function EarlyAccessModal({
                     }
                   }}
                   placeholder="you@example.com"
-                  className="h-12 w-full rounded-xl border border-white/15 bg-slate-950/70 px-4 text-base text-white outline-none transition placeholder:text-slate-500 focus:border-amber-300 focus:ring-2 focus:ring-amber-300/30 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="h-12 w-full rounded-xl border border-cairn-border bg-cairn-outer/70 px-4 text-base text-cairn-text outline-none transition placeholder:text-cairn-muted/60 focus:border-cairn-gold focus:ring-2 focus:ring-cairn-gold/30 disabled:cursor-not-allowed disabled:opacity-60"
                 />
               </div>
 
               {submitError && (
                 <p
                   role="alert"
-                  className="rounded-lg border border-rose-300/25 bg-rose-300/10 px-3 py-2 text-sm text-rose-200"
+                  className="rounded-lg border border-cairn-danger/25 bg-cairn-danger-soft px-3 py-2 text-sm text-cairn-danger"
                 >
                   {submitError}
                 </p>
@@ -207,7 +207,7 @@ export default function EarlyAccessModal({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-amber-300 px-5 font-semibold text-slate-950 transition-colors hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-12 w-full items-center justify-center rounded-xl bg-cairn-gold px-5 font-semibold text-cairn-outer transition-colors hover:bg-cairn-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cairn-bg disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting
                   ? "Sending..."
@@ -215,7 +215,7 @@ export default function EarlyAccessModal({
               </button>
             </form>
 
-            <p className="mt-4 text-xs leading-5 text-slate-400">
+            <p className="mt-4 text-xs leading-5 text-cairn-muted">
               No spam. Only launch updates and useful Santa Cruz
               stuff.
             </p>
@@ -235,18 +235,18 @@ function SuccessMessage({
 }: SuccessMessageProps) {
   return (
     <div className="py-4 text-center">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky-400/15 text-sky-300">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cairn-gold-soft text-cairn-gold">
         <Check
           aria-hidden="true"
           className="h-7 w-7"
         />
       </div>
 
-      <h2 className="mt-5 text-2xl font-bold text-white">
+      <h2 className="mt-5 font-display text-3xl font-medium text-cairn-text">
         Request sent
       </h2>
 
-      <p className="mt-3 text-sm leading-6 text-slate-300">
+      <p className="mt-3 text-sm leading-6 text-cairn-muted">
         Your email was sent successfully. We&apos;ll let you know
         when Lost Boys V2 is ready.
       </p>
@@ -254,7 +254,7 @@ function SuccessMessage({
       <button
         type="button"
         onClick={onClose}
-        className="mt-6 inline-flex h-11 items-center justify-center rounded-xl border border-white/15 px-5 text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+        className="mt-6 inline-flex h-11 items-center justify-center rounded-xl border border-cairn-border px-5 text-sm font-semibold text-cairn-text transition-colors hover:bg-cairn-card/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold"
       >
         Done
       </button>

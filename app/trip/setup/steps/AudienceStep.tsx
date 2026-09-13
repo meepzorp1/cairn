@@ -1,28 +1,24 @@
 "use client";
 
-import type { Ref } from "react";
 import { Film, GraduationCap, Sparkles, Users } from "lucide-react";
 import type { Audience } from "../../types";
 import AudienceOption from "../components/AudienceOption";
 import StepHeader from "../components/StepHeader";
 
 type AudienceStepProps = {
-  panelRef: Ref<HTMLElement>;
   audience: Audience | null;
   onSelectAudience: (audience: Audience) => void;
   onBack: () => void;
 };
 
 export default function AudienceStep({
-  panelRef,
   audience,
   onSelectAudience,
   onBack,
 }: AudienceStepProps) {
   return (
     <section
-      ref={panelRef}
-      className="absolute inset-0 flex min-h-0 flex-col"
+      className="flex h-full min-h-0 flex-col"
       aria-label="Choose exploration style"
     >
       <StepHeader
@@ -30,10 +26,12 @@ export default function AudienceStep({
         description="Choose the kind of Santa Cruz experience you want along the way."
         onBack={onBack}
         backLabel="Return to travel modes"
+        eyebrow="Set the scene"
+        eyebrowIcon={<Sparkles className="size-3.5" />}
       />
 
       <div className="mt-6 min-h-0 flex-1 overflow-y-auto overscroll-contain pr-1">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-sc-muted">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-cairn-muted">
           Show me
         </p>
         <div className="flex flex-col gap-2">

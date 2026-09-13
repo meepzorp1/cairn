@@ -31,7 +31,7 @@ export default function MapHeader({
   const hasActiveRoute = destinationPlace !== null;
 
   const placesStatus = placesLoading ? (
-    <span className="flex items-center gap-1.5 text-sc-ocean">
+    <span className="flex items-center gap-2 text-cairn-gold">
       <span className="size-1.5 animate-pulse rounded-full bg-current" />
       {discoveries.length > 0
         ? `Updating ${discoveries.length} ${discoveries.length === 1 ? "place" : "places"}…`
@@ -44,7 +44,7 @@ export default function MapHeader({
   );
 
   return (
-    <header className="relative z-30 shrink-0 border-b border-white/10 bg-sc-panel">
+    <header className="texture-grain relative z-30 shrink-0 border-b border-cairn-border/70 bg-cairn-bg">
       <div className="flex items-start justify-between gap-4 px-4 py-3">
         <div className="min-w-0 flex-1">
           {destinationPlace ? (
@@ -54,19 +54,19 @@ export default function MapHeader({
               className="flex w-full min-w-0 items-center gap-3 text-left"
               aria-label={`Open details for ${destinationPlace.name}`}
             >
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sc-ocean-soft text-sc-ocean">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-cairn-gold-soft text-cairn-gold">
                 <MapPin className="size-5" />
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-sc-ocean">
+                <p className="text-xs font-semibold uppercase tracking-wide text-cairn-gold">
                   Destination
                 </p>
                 <p className="truncate text-sm font-semibold">
                   {destinationPlace.name}
                 </p>
                 {destinationDiscovery && (
-                  <p className="mt-0.5 text-xs text-sc-muted">
+                  <p className="mt-0.5 text-xs text-cairn-muted">
                     {destinationDiscovery.distance} · {destinationDiscovery.duration}
                   </p>
                 )}
@@ -75,9 +75,9 @@ export default function MapHeader({
           ) : (
             <div>
               <p className="text-sm font-semibold">Exploring nearby</p>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-sc-muted">
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-cairn-muted">
                 <span>{trip.mode} · {trip.audience}</span>
-                <span className="text-white/20">•</span>
+                <span className="text-cairn-border/70">•</span>
                 {placesStatus}
               </div>
             </div>
@@ -87,7 +87,7 @@ export default function MapHeader({
         <button
           type="button"
           onClick={onEndTrip}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-white/10 text-sc-muted transition hover:text-sc-text"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full border border-cairn-border/70 text-cairn-muted transition hover:text-cairn-text"
           aria-label="End exploration"
         >
           <X className="size-5" />
@@ -97,9 +97,9 @@ export default function MapHeader({
       {hasActiveRoute && (
         <>
           <div className="px-4 pb-2">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-sc-muted">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-cairn-muted">
               <span>{trip.mode} · {trip.audience}</span>
-              <span className="text-white/20">•</span>
+              <span className="text-cairn-border/70">•</span>
               {placesStatus}
             </div>
           </div>
@@ -111,8 +111,8 @@ export default function MapHeader({
               onClick={() => onExploreAlongRouteChange(true)}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
                 exploreAlongRoute
-                  ? "border-sc-ocean/60 bg-sc-ocean-soft text-sc-ocean"
-                  : "border-white/10 bg-sc-raised text-sc-muted hover:text-sc-text"
+                  ? "border-cairn-gold/60 bg-cairn-gold-soft text-cairn-gold"
+                  : "border-cairn-border/70 bg-cairn-card text-cairn-muted hover:text-cairn-text"
               }`}
             >
               <Compass className="size-4" />
@@ -125,8 +125,8 @@ export default function MapHeader({
               onClick={() => onExploreAlongRouteChange(false)}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition ${
                 !exploreAlongRoute
-                  ? "border-sc-ocean/60 bg-sc-ocean-soft text-sc-ocean"
-                  : "border-white/10 bg-sc-raised text-sc-muted hover:text-sc-text"
+                  ? "border-cairn-gold/60 bg-cairn-gold-soft text-cairn-gold"
+                  : "border-cairn-border/70 bg-cairn-card text-cairn-muted hover:text-cairn-text"
               }`}
             >
               <Route className="size-4" />
