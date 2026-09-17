@@ -132,7 +132,6 @@ export default function HeroMosaic() {
     return () => {
       breatheTween.current?.kill();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggle = () => {

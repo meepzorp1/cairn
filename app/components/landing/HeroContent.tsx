@@ -1,7 +1,5 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
-
 export default function HeroContent() {
   return (
     <div className="flex flex-col items-center text-center">

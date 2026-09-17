@@ -381,33 +381,36 @@ function RoutePolyline({
    * to justify recalculating directions. This is intentionally
    * independent from the marker's smoother live location.
    */
+  const locationLatitude = location.latitude;
+  const locationLongitude = location.longitude;
+
   useEffect(() => {
     const currentRouteOrigin = routeOriginRef.current;
+    // Rebuilt from the two coordinates the effect actually depends on, so
+    // a new `location` object with unchanged coordinates can't re-run it.
+    const nextRouteOrigin = {
+      latitude: locationLatitude,
+      longitude: locationLongitude,
+    };
 
     if (!currentRouteOrigin) {
-      routeOriginRef.current = {
-        latitude: location.latitude,
-        longitude: location.longitude,
-      };
+      routeOriginRef.current = nextRouteOrigin;
       setRouteOriginVersion((version) => version + 1);
       return;
     }
 
     const distance = coordinateDistanceInMeters(
       currentRouteOrigin,
-      location,
+      nextRouteOrigin,
     );
 
     if (distance < ROUTE_REFRESH_DISTANCE_METERS) {
       return;
     }
 
-    routeOriginRef.current = {
-      latitude: location.latitude,
-      longitude: location.longitude,
-    };
+    routeOriginRef.current = nextRouteOrigin;
     setRouteOriginVersion((version) => version + 1);
-  }, [location.latitude, location.longitude]);
+  }, [locationLatitude, locationLongitude]);
 
   /*
    * If the destination disappears, remove the route immediately.
