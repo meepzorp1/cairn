@@ -207,10 +207,15 @@ try {
   const hand = makeHand(page);
 
   // Every beat waits for its own target first, so a UI change fails here with
-  // a sentence instead of a 30s boundingBox timeout further down.
-  const beat = async (locator, missing, opts) => {
-    await locator.waitFor({ timeout: 15_000 }).catch(() => {
-      throw new Error(missing);
+  // a sentence instead of a 30s boundingBox timeout further down. The label is
+  // printed as it happens, so a run that dies partway says where it got to.
+  const beat = async (label, locator, missing, opts) => {
+    console.log(`  ${label}`);
+    await locator.waitFor({ timeout: 15_000 }).catch((error) => {
+      // Only a genuine timeout means the element isn't there. If the browser
+      // died, say so instead of blaming a button that was never looked for.
+      if (error?.name === "TimeoutError") throw new Error(missing);
+      throw error;
     });
     await hand.tap(locator, opts);
   };
@@ -219,6 +224,7 @@ try {
   await pause(page, 700);
 
   await beat(
+    "tap Explore Nearby",
     page.getByRole("button", { name: /Explore Nearby/ }),
     "the intent step never rendered",
     { settle: 950 },
@@ -228,12 +234,14 @@ try {
   // walking 1200m, biking 2500m, driving 5000m. Driving is also the ceiling
   // the API route clamps to, so it's the most places the app can ever show.
   await beat(
+    `tap ${MODE}`,
     page.getByRole("button", { name: MODE, exact: true }),
     `no ${MODE} button on the travel step`,
     { settle: 950 },
   );
 
   await beat(
+    "tap Student",
     page.getByRole("button", { name: /Student/ }),
     "no Student option on the audience step",
     { settle: 1100 },
@@ -255,6 +263,7 @@ try {
   }
 
   await beat(
+    "tap Start exploring",
     page.getByRole("button", { name: "Start exploring", exact: true }),
     "the Start exploring button never became available",
     { settle: 900 },
@@ -276,6 +285,7 @@ try {
   //    at all, because the down and the up land on different elements. Dragging
   //    it looks right on screen and does nothing.
   await beat(
+    "open the drawer",
     page.getByRole("button", { name: "Expand nearby places" }),
     "couldn't find the drawer handle on the map screen",
     { settle: 1000 },
@@ -291,6 +301,7 @@ try {
   // 2. Pick a place. Selecting a card also collapses the drawer, so the map
   //    pans to the pin and the collapsed bar shows what you picked.
   await beat(
+    "pick a place",
     page.locator("button:has(h3)").first(),
     "the drawer opened but no discovery cards rendered in it",
     { settle: 1600 },
@@ -299,6 +310,7 @@ try {
   // 3. Route to it. The payoff shot: the line draws across the map and the
   //    header turns into the destination with distance and time.
   await beat(
+    "tap Set destination",
     page.getByRole("button", { name: "Set destination" }),
     "no Set destination button appeared after picking a place",
     { settle: 2400 },
@@ -306,6 +318,7 @@ try {
 
   // 4. Re-search along the route.
   await beat(
+    "tap Explore",
     page.getByRole("button", { name: "Explore", exact: true }),
     "no Explore button appeared after setting a destination",
     { settle: 2600 },
@@ -313,9 +326,33 @@ try {
 
   await hand.rest();
   await pause(page, 900);
+} catch (error) {
+  // Closing the context below is what finalizes the video file, and it throws
+  // if the browser is already gone. Without this, that second throw REPLACES
+  // whatever actually went wrong, and you get "Target page, context or browser
+  // has been closed" pointing at the close call instead of the real failure.
+  const gone = /Target (page|closed)|has been closed|Target crashed/i.test(
+    error?.message ?? "",
+  );
+
+  console.error(
+    `\n${
+      gone
+        ? "The browser went away mid-run. If you closed the window yourself that's all this is; otherwise it crashed."
+        : `Run failed: ${error?.message ?? error}`
+    }\n`,
+  );
+
+  if (!gone) console.error(error);
+  process.exitCode = 1;
 } finally {
-  await context.close();
-  await browser.close();
+  await context.close().catch(() => {});
+  await browser.close().catch(() => {});
+}
+
+if (process.exitCode === 1) {
+  console.error("No usable recording. Nothing was written to scripts/demo-out/.");
+  process.exit(1);
 }
 
 /* --- two cuts of the same take ----------------------------------------- */
