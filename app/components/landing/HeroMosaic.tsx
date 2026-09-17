@@ -91,6 +91,7 @@ function HeroTile({
         src={src}
         alt={alt}
         fill
+        priority
         sizes="25vw"
         className="object-cover"
         style={{

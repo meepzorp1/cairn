@@ -37,6 +37,8 @@ export default function Hero({ children }: HeroProps) {
 
   return (
     <section className="relative min-h-dvh overflow-hidden bg-cairn-bg text-cairn-text">
+      {/* React 19 hoists this to <head>, preloading the background before it's needed as a CSS background-image (which Next's Image priority handling doesn't cover). */}
+      <link rel="preload" as="image" href="/hero/mosaic-bg.jpg" />
       <div
         ref={bgImageRef}
         aria-hidden="true"
