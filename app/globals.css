@@ -81,6 +81,15 @@ select {
  * (e.g. `absolute`) in the cascade regardless of source order. Every
  * usage already establishes its own positioning context.
  */
+/*
+ * Lets HeroMosaic's cqw()-based sizing scale fluidly with its own box
+ * width rather than the viewport. Plain CSS property (not yet in React's
+ * CSSProperties types), so it lives here instead of as an inline style.
+ */
+.cq-hero {
+  container-type: inline-size;
+}
+
 .texture-grain::after {
   content: "";
   position: absolute;

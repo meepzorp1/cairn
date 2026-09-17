@@ -37,7 +37,7 @@ export default function ReadyButton({ onClick }: ReadyButtonProps) {
         handleRelease();
         onClick();
       }}
-      className="group relative flex min-h-14 w-full max-w-xs items-center justify-center gap-3 overflow-hidden rounded-full bg-cairn-gold px-8 py-4 font-semibold text-cairn-bg shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-colors hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cairn-bg"
+      className="group relative flex min-h-14 w-full max-w-xs mt-8 items-center justify-center gap-3 overflow-hidden rounded-full bg-cairn-gold px-8 py-4 font-semibold text-cairn-bg shadow-[0_18px_50px_rgba(0,0,0,0.28)] transition-colors hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cairn-bg"
     >
       <span
         ref={glowRef}
