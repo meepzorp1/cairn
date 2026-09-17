@@ -190,7 +190,7 @@ export default function HeroMosaic() {
   return (
     <div
       className="cq-hero relative mx-auto w-full max-w-[420px]"
-      style={{ aspectRatio: `${REF_W} / 1254` }}
+      style={{ aspectRatio: `${REF_W} / 1254`, marginTop: "0.5rem" }}
     >
       <div ref={tilesRef}>
         {HERO_TILES.left.map((tile, i) => (
