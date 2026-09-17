@@ -206,7 +206,7 @@ export default function HeroMosaic() {
         ref={phoneRef}
         className="absolute left-1/2 z-10 box-border -translate-x-1/2 border-[3px] border-cairn-text bg-[#0a100f] shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
         style={{
-          top: cqw(576 - 470),
+          top: `calc(${cqw(576 - 470)} - 0.5rem)`,
           width: cqw(588),
           height: cqw(1148),
           padding: cqw(20),

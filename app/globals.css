@@ -90,17 +90,6 @@ select {
   container-type: inline-size;
 }
 
-/*
- * "Cairn" title outline: a soft, blurred text-shadow rather than a
- * geometric -webkit-text-stroke. A hard-edged stroke adds the same
- * thickness to every edge, which bulges Fraunces's thin serif tips
- * into odd little blobs where letters sit close together. A blurred
- * shadow softens those same tips instead of thickening them uniformly.
- */
-.cairn-title {
-  text-shadow: 0 0 1px rgba(10, 15, 12, 0.55);
-}
-
 .texture-grain::after {
   content: "";
   position: absolute;
