@@ -23,6 +23,20 @@ import { useHeroDim } from "./Hero";
 const REF_W = 1080;
 const cqw = (px: number) => `${(px / REF_W) * 100}cqw`;
 
+/**
+ * The demo reel that plays inside the phone, recorded by
+ * scripts/record-demo.mjs. That script cuts two versions of the same take:
+ * "-full" opens on the trip setup, "-map" starts once the map is up.
+ *
+ * The poster is deliberately taken from the map cut while the reel is the full
+ * one. Nobody sees a frame of this until they press play, so the still wants to
+ * be the map full of pins rather than the setup screen's list of buttons. The
+ * cost is a jump from the still to the opening frame on play; to trade that
+ * back, point DEMO_POSTER at a first frame of DEMO_VIDEO instead.
+ */
+const DEMO_VIDEO = "/hero/cairn-demo-full.mp4";
+const DEMO_POSTER = "/hero/cairn-demo-map-poster.jpg";
+
 const HERO_TILES = {
   left: [
     {
@@ -111,13 +125,14 @@ export default function HeroMosaic() {
   const tilesRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
-  const playBtnRef = useRef<HTMLButtonElement>(null);
+  const playIconRef = useRef<HTMLSpanElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const breatheTween = useRef<gsap.core.Tween | null>(null);
 
   const startBreathing = () => {
     breatheTween.current?.kill();
-    if (!playBtnRef.current) return;
-    breatheTween.current = gsap.to(playBtnRef.current, {
+    if (!playIconRef.current) return;
+    breatheTween.current = gsap.to(playIconRef.current, {
       y: "-0.5rem",
       scale: 1.05,
       duration: 1.3,
@@ -134,8 +149,13 @@ export default function HeroMosaic() {
     };
   }, []);
 
-  const toggle = () => {
-    const next = !playing;
+  /**
+   * Everything the hero does when the reel starts or stops. Split out from the
+   * click handler because the video ending has to land in the same place: if
+   * only the click path reset this, a reel that played to its end would leave
+   * the tiles dimmed and the play button hidden with nothing running.
+   */
+  const setPlayState = (next: boolean) => {
     setPlaying(next);
     setBgDim(next);
 
@@ -144,14 +164,15 @@ export default function HeroMosaic() {
       tilesRef.current,
       phoneRef.current,
       glowRef.current,
-      playBtnRef.current,
+      playIconRef.current,
     ]);
 
     if (next) {
-      gsap.to(playBtnRef.current, {
+      gsap.to(playIconRef.current, {
         y: 0,
-        scale: 1,
-        duration: 0.2,
+        scale: 0.9,
+        opacity: 0,
+        duration: 0.3,
         ease: "power2.out",
       });
       gsap.to(tilesRef.current, {
@@ -170,6 +191,14 @@ export default function HeroMosaic() {
         ease: "power2.out",
       });
     } else {
+      gsap.to(playIconRef.current, {
+        y: 0,
+        scale: 1,
+        opacity: 1,
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: startBreathing,
+      });
       gsap.to(tilesRef.current, {
         opacity: 1,
         duration: 1.2,
@@ -185,7 +214,22 @@ export default function HeroMosaic() {
         duration: 1.2,
         ease: "power2.out",
       });
-      startBreathing();
+    }
+  };
+
+  const toggle = () => {
+    const next = !playing;
+    setPlayState(next);
+
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (next) {
+      // play() rejects on a missing file or a blocked autoplay policy. Put the
+      // hero back rather than leaving it dimmed around a phone doing nothing.
+      video.play().catch(() => setPlayState(false));
+    } else {
+      video.pause();
     }
   };
 
@@ -226,30 +270,54 @@ export default function HeroMosaic() {
           className="relative h-full w-full overflow-hidden bg-cairn-card"
           style={{ borderRadius: cqw(40) }}
         >
+          {/* Muted and playsInline so iOS plays it in place instead of
+              throwing it into its own fullscreen player. preload="metadata"
+              keeps the landing page light: the poster is what people see
+              until they press play. */}
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover"
+            src={DEMO_VIDEO}
+            poster={DEMO_POSTER}
+            muted
+            playsInline
+            preload="metadata"
+            onEnded={() => setPlayState(false)}
+          />
+
+          {/* Notch sits above the reel, so the video reads as being on-screen. */}
           <div
             className="absolute left-1/2 -translate-x-1/2 rounded-full bg-[#0a100f]"
             style={{ top: cqw(18), width: cqw(140), height: cqw(22) }}
           />
+
+          {/* The whole screen is the hit area: the gold circle fades out once
+              the reel is running, and tapping anywhere pauses it. */}
           <button
-            ref={playBtnRef}
             type="button"
             onClick={toggle}
             aria-label={playing ? "Pause preview" : "Play preview"}
             aria-pressed={playing}
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-cairn-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cairn-gold focus-visible:ring-offset-2 focus-visible:ring-offset-cairn-bg"
-            style={{ width: cqw(136), height: cqw(136) }}
+            className="absolute inset-0 flex cursor-pointer items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cairn-gold"
           >
             <span
-              className="block"
-              style={{
-                marginLeft: cqw(10),
-                width: 0,
-                height: 0,
-                borderTop: `${cqw(42)} solid transparent`,
-                borderBottom: `${cqw(42)} solid transparent`,
-                borderLeft: `${cqw(64)} solid var(--cairn-bg)`,
-              }}
-            />
+              ref={playIconRef}
+              aria-hidden="true"
+              className="flex items-center justify-center rounded-full bg-cairn-gold"
+              style={{ width: cqw(136), height: cqw(136) }}
+            >
+              <span
+                className="block"
+                style={{
+                  marginLeft: cqw(10),
+                  width: 0,
+                  height: 0,
+                  borderTop: `${cqw(42)} solid transparent`,
+                  borderBottom: `${cqw(42)} solid transparent`,
+                  borderLeft: `${cqw(64)} solid var(--cairn-bg)`,
+                }}
+              />
+            </span>
           </button>
         </div>
       </div>
