@@ -95,10 +95,10 @@ function HeroTile({
         className="object-cover"
         style={{
           objectPosition,
-          filter: "brightness(0.78) saturate(1.15) contrast(1.03)",
+          filter: "brightness(0.98) saturate(1.1) contrast(1.0)",
         }}
       />
-      <div className="pointer-events-none absolute inset-0 bg-[#14201c] opacity-[0.32] mix-blend-multiply" />
+      <div className="pointer-events-none absolute inset-0 bg-[#14201c] opacity-[0.14] mix-blend-multiply" />
       <div className="pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0_0_46px_14px_rgba(20,32,28,0.55)]" />
     </div>
   );
