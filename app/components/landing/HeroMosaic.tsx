@@ -128,7 +128,9 @@ export default function HeroMosaic() {
 
   useEffect(() => {
     startBreathing();
-    return () => breatheTween.current?.kill();
+    return () => {
+      breatheTween.current?.kill();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
