@@ -156,6 +156,17 @@ export default function useActiveTrip(
 
   useEffect(() => {
     if (!followingRoute) {
+      /*
+       * react-hooks/set-state-in-effect wants this reset moved out of
+       * the effect, but the pool it clears is itself effect-driven:
+       * `places` is replaced by usePlaceSearch on every window move, and
+       * the accumulate-on-change below is the only hook we get on that.
+       * Clearing it in render or from a ref both trade this warning for
+       * a refs-during-render one, so the honest fix is to move the
+       * accumulation into the search pipeline itself - a real refactor,
+       * not a lint tidy-up. Suppressed deliberately until then.
+       */
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAccumulatedPlaces({});
       return;
     }

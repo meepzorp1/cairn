@@ -1,7 +1,22 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+/*
+ * Constructed per-request rather than at module scope: the Resend
+ * constructor throws when the key is missing, and `.env*` is gitignored,
+ * so a module-scope client takes the whole build down on any machine
+ * that hasn't got the secret (CI, a fresh clone). Every other secret in
+ * the app is already read inside its handler for the same reason.
+ */
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured.");
+  }
+
+  return new Resend(apiKey);
+}
 
 export async function POST(request: Request) {
   try {
@@ -24,7 +39,7 @@ export async function POST(request: Request) {
       throw new Error("EARLY_ACCESS_EMAIL is not configured.");
     }
 
-    const { error } = await resend.emails.send({
+    const { error } = await getResendClient().emails.send({
       from: "Lost Boys <onboarding@resend.dev>",
       to: recipient,
       subject: "New Lost Boys early-access signup",

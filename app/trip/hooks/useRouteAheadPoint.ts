@@ -44,6 +44,28 @@ export default function useRouteAheadPoint({
   const destinationLatitude = destination?.latitude ?? null;
   const destinationLongitude = destination?.longitude ?? null;
 
+  const isActive =
+    enabled &&
+    origin !== null &&
+    destinationLatitude !== null &&
+    destinationLongitude !== null;
+
+  /*
+   * Clearing a stale point when the hook goes inactive is a
+   * reset-on-change, so it happens during render rather than in the
+   * effect below - otherwise the caller paints one frame with the
+   * previous trip's point still in hand.
+   */
+  const [wasActive, setWasActive] = useState(isActive);
+
+  if (wasActive !== isActive) {
+    setWasActive(isActive);
+
+    if (!isActive) {
+      setAheadPoint(null);
+    }
+  }
+
   useEffect(() => {
     if (
       !enabled ||
@@ -52,7 +74,6 @@ export default function useRouteAheadPoint({
       destinationLongitude === null
     ) {
       lastOriginRef.current = null;
-      setAheadPoint(null);
       return;
     }
 
