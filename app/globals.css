@@ -91,25 +91,16 @@ select {
 }
 
 /*
- * "Cairn" title outline: a duplicate of the text rendered behind the
- * gold gradient fill, stroked and filled transparent, so the letterforms
- * read clearly against the busy photo mosaic behind them. Using a
- * ::after layer (rather than -webkit-text-stroke directly on the
- * visible text) keeps the stroke from muddying the gradient fill or
- * rounding off the serif's swashes.
+ * "Cairn" title outline: a soft, blurred text-shadow rather than a
+ * geometric -webkit-text-stroke. A hard-edged stroke adds the same
+ * thickness to every edge, which bulges Fraunces's thin serif tips
+ * into odd little blobs where letters sit close together. A blurred
+ * shadow softens those same tips instead of thickening them uniformly.
  */
 .cairn-title {
-  position: relative;
-  display: inline-block;
-}
-.cairn-title::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  color: transparent;
-  -webkit-text-stroke: 1px var(--cairn-outer);
-  text-stroke: 1px var(--cairn-outer);
+  text-shadow:
+    0 0 2px var(--cairn-outer),
+    0 0 6px rgba(10, 15, 12, 0.55);
 }
 
 .texture-grain::after {

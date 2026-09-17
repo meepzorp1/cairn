@@ -22,7 +22,6 @@ export default function HeroContent() {
 
       <h1
         data-hero
-        data-text="Cairn"
         className="cairn-title font-display bg-linear-to-b from-cairn-text via-[#e5d6ae] to-cairn-gold bg-clip-text text-7xl font-semibold leading-none tracking-[-0.02em] text-transparent drop-shadow-[0_10px_30px_rgba(0,0,0,0.32)] sm:text-8xl lg:text-[7rem]"
       >
         Cairn
