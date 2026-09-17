@@ -108,8 +108,8 @@ select {
   inset: 0;
   z-index: -1;
   color: transparent;
-  -webkit-text-stroke: 3px var(--cairn-outer);
-  text-stroke: 3px var(--cairn-outer);
+  -webkit-text-stroke: 1px var(--cairn-outer);
+  text-stroke: 1px var(--cairn-outer);
 }
 
 .texture-grain::after {
