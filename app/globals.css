@@ -90,6 +90,28 @@ select {
   container-type: inline-size;
 }
 
+/*
+ * "Cairn" title outline: a duplicate of the text rendered behind the
+ * gold gradient fill, stroked and filled transparent, so the letterforms
+ * read clearly against the busy photo mosaic behind them. Using a
+ * ::after layer (rather than -webkit-text-stroke directly on the
+ * visible text) keeps the stroke from muddying the gradient fill or
+ * rounding off the serif's swashes.
+ */
+.cairn-title {
+  position: relative;
+  display: inline-block;
+}
+.cairn-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 3px var(--cairn-outer);
+  text-stroke: 3px var(--cairn-outer);
+}
+
 .texture-grain::after {
   content: "";
   position: absolute;
