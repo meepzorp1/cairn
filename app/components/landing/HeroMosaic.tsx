@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import gsap from "gsap";
+import { useHeroDim } from "./Hero";
 
 /**
  * The hero's "device demo" visual: a photo mosaic of Santa Cruz spots
@@ -105,6 +106,7 @@ function HeroTile({
 
 export default function HeroMosaic() {
   const [playing, setPlaying] = useState(false);
+  const setBgDim = useHeroDim();
   const dimRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
@@ -133,6 +135,7 @@ export default function HeroMosaic() {
   const toggle = () => {
     const next = !playing;
     setPlaying(next);
+    setBgDim(next);
 
     breatheTween.current?.kill();
     gsap.killTweensOf([
