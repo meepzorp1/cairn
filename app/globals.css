@@ -98,9 +98,7 @@ select {
  * shadow softens those same tips instead of thickening them uniformly.
  */
 .cairn-title {
-  text-shadow:
-    0 0 2px var(--cairn-outer),
-    0 0 6px rgba(10, 15, 12, 0.55);
+  text-shadow: 0 0 1px rgba(10, 15, 12, 0.55);
 }
 
 .texture-grain::after {
