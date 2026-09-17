@@ -107,7 +107,7 @@ function HeroTile({
 export default function HeroMosaic() {
   const [playing, setPlaying] = useState(false);
   const setBgDim = useHeroDim();
-  const dimRef = useRef<HTMLDivElement>(null);
+  const tilesRef = useRef<HTMLDivElement>(null);
   const phoneRef = useRef<HTMLDivElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
   const playBtnRef = useRef<HTMLButtonElement>(null);
@@ -139,7 +139,7 @@ export default function HeroMosaic() {
 
     breatheTween.current?.kill();
     gsap.killTweensOf([
-      dimRef.current,
+      tilesRef.current,
       phoneRef.current,
       glowRef.current,
       playBtnRef.current,
@@ -152,8 +152,8 @@ export default function HeroMosaic() {
         duration: 0.2,
         ease: "power2.out",
       });
-      gsap.to(dimRef.current, {
-        opacity: 0.88,
+      gsap.to(tilesRef.current, {
+        opacity: 0.06,
         duration: 1.2,
         ease: "power2.out",
       });
@@ -168,8 +168,8 @@ export default function HeroMosaic() {
         ease: "power2.out",
       });
     } else {
-      gsap.to(dimRef.current, {
-        opacity: 0,
+      gsap.to(tilesRef.current, {
+        opacity: 1,
         duration: 1.2,
         ease: "power2.out",
       });
@@ -192,19 +192,14 @@ export default function HeroMosaic() {
       className="cq-hero relative mx-auto w-full max-w-[420px]"
       style={{ aspectRatio: `${REF_W} / 1254` }}
     >
-      {HERO_TILES.left.map((tile, i) => (
-        <HeroTile key={tile.src} side="left" index={i} {...tile} />
-      ))}
-      {HERO_TILES.right.map((tile, i) => (
-        <HeroTile key={tile.src} side="right" index={i} {...tile} />
-      ))}
-
-      {/* Theater-dim overlay: covers the tiles, sits below the phone (z-10) */}
-      <div
-        ref={dimRef}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-[6] rounded-[24px] bg-[#050a08] opacity-0"
-      />
+      <div ref={tilesRef}>
+        {HERO_TILES.left.map((tile, i) => (
+          <HeroTile key={tile.src} side="left" index={i} {...tile} />
+        ))}
+        {HERO_TILES.right.map((tile, i) => (
+          <HeroTile key={tile.src} side="right" index={i} {...tile} />
+        ))}
+      </div>
 
       {/* Phone mockup */}
       <div
