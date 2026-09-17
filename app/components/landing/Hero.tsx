@@ -21,7 +21,7 @@ export function useHeroDim() {
   return useContext(HeroDimContext);
 }
 
-const BG_OPACITY_IDLE = 0.4;
+const BG_OPACITY_IDLE = 0.65;
 const BG_OPACITY_PLAYING = 0.04;
 
 export default function Hero({ children }: HeroProps) {
@@ -48,10 +48,10 @@ export default function Hero({ children }: HeroProps) {
       />
 
       {/* Keep the mosaic present, but make the center readable and let it disappear into Cairn's dark UI. */}
-      <div aria-hidden="true" className="absolute inset-0 bg-cairn-bg/30" />
+      <div aria-hidden="true" className="absolute inset-0 bg-cairn-bg/12" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_31%,transparent_0%,rgba(10,15,12,0.10)_35%,rgba(10,15,12,0.78)_82%)]"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_31%,transparent_0%,rgba(10,15,12,0.06)_35%,rgba(10,15,12,0.5)_82%)]"
       />
       <div
         aria-hidden="true"
