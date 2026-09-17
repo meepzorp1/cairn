@@ -35,9 +35,12 @@ const RAW = join(OUT, "raw");
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
 const SLOW = Number(process.env.SLOW ?? 1);
 
-// 390x844 is a stock iPhone viewport; 3x gets us a 1170x2532 capture, which is
-// comfortably above the ~548px the hero phone actually renders it at.
+// 390x844 is a stock iPhone viewport. The hero phone renders the reel at only
+// about 190 CSS px wide, so this is already roughly double what it needs.
 const VIEWPORT = { width: 390, height: 844 };
+
+// Rasterize at 3x. This does NOT change the video's resolution (see below);
+// it just gives the capture a supersampled frame to downsample from.
 const SCALE = 3;
 
 // Santa Cruz. The map screen won't render at all without a location fix, and a
@@ -179,9 +182,14 @@ const context = await browser.newContext({
   permissions: ["geolocation"],
   locale: "en-US",
   colorScheme: "dark",
+  // recordVideo.size must match the viewport. Playwright only ever scales a
+  // capture DOWN to fit this box, never up, and it ignores deviceScaleFactor
+  // entirely. Asking for 3x here does not give a 3x recording: it gives a 3x
+  // canvas with the 390x844 capture sitting in the top-left corner and flat
+  // grey filling the rest, which is what shows up inside the phone.
   recordVideo: {
     dir: RAW,
-    size: { width: VIEWPORT.width * SCALE, height: VIEWPORT.height * SCALE },
+    size: { width: VIEWPORT.width, height: VIEWPORT.height },
   },
 });
 
