@@ -26,11 +26,16 @@ const cqw = (px: number) => `${(px / REF_W) * 100}cqw`;
 /**
  * The demo reel that plays inside the phone, recorded by
  * scripts/record-demo.mjs. That script cuts two versions of the same take:
- * "-full" opens on the trip setup, "-map" starts once the map is up. Swap the
- * suffix on both of these to change which one the hero plays.
+ * "-full" opens on the trip setup, "-map" starts once the map is up.
+ *
+ * The poster is deliberately taken from the map cut while the reel is the full
+ * one. Nobody sees a frame of this until they press play, so the still wants to
+ * be the map full of pins rather than the setup screen's list of buttons. The
+ * cost is a jump from the still to the opening frame on play; to trade that
+ * back, point DEMO_POSTER at a first frame of DEMO_VIDEO instead.
  */
 const DEMO_VIDEO = "/hero/cairn-demo-full.mp4";
-const DEMO_POSTER = "/hero/cairn-demo-full-poster.jpg";
+const DEMO_POSTER = "/hero/cairn-demo-map-poster.jpg";
 
 const HERO_TILES = {
   left: [
